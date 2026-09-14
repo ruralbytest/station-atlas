@@ -33,5 +33,8 @@ for(const id of new Set(atlas.parts.map(p=>p.conceptId))){
  for(const [fact,urls] of Object.entries(cited))for(const url of [urls].flat()){const host=new URL(url).hostname;assert.ok(host==='nasa.gov'||host.endsWith('.nasa.gov')||host==='esa.int'||host.endsWith('.esa.int'),`${id}.${fact}: ${host} is not a nasa.gov or esa.int page`);}
  for(const [fact,label] of Object.entries(FACT_LABELS))if(text.includes(label))assert.ok(cited[fact],`${id}: states ${fact} without a source`);
 }
+// Every concept carries a launch, and elements that flew together share one date.
+for(const c of atlas.concepts){assert.match(c.launch?.date??'',/^\d{4}-\d{2}-\d{2}$/,`${c.id}: no launch date`);assert.ok(c.launch.flight&&c.launch.vehicle,`${c.id}: launch needs a flight and vehicle`);}
+const flightDates=new Map();for(const id of new Set(atlas.parts.map(p=>p.conceptId))){const {flight,date}=atlas.concepts.find(c=>c.id===id).launch;assert.equal(flightDates.get(flight)??date,date,`flight ${flight} has several dates`);flightDates.set(flight,date);}
 for(const id of Object.keys(EXPLANATIONS))assert.ok(atlas.concepts.some(c=>c.id===id),`explanation for unknown concept ${id}`);
 console.log(`Verified ${ids.size} individually indexed meshes from ${objects.length} scene layers, ${atlas.concepts.length} concept mappings, ${tris.toLocaleString()} triangles, and every binary buffer.`);

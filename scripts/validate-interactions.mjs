@@ -3,6 +3,7 @@ import {readFile} from 'node:fs/promises';
 import {createExplosionLayout} from '../app/explosion-layout.ts';
 import {PointerTap} from '../app/pointer-tap.ts';
 import {atlasTools} from '../app/agent-tools.ts';
+import {PLAY_MS_PER_YEAR,TIMELINE_END,YEAR_MS,advanceAssembly,isLaunched,latestArrival,partLaunchTimes,timelineStart} from '../app/assembly.ts';
 
 for (const file of ['atlas.json']) {
   const atlas=JSON.parse(await readFile(new URL(`../public/models/${file}`,import.meta.url)));
@@ -29,7 +30,14 @@ for (const file of ['atlas.json']) {
   assert.throws(()=>inspect.execute({id:'nonexistent-structure'}));
   assert.equal(selected,previous);
   assert.throws(()=>find.execute({query:' '}));
-  console.log(`${file}: packing at desktop/mobile aspect ratios and search/inspection contracts passed.`);
+  const launches=partLaunchTimes(atlas),start=timelineStart(atlas),present=at=>new Set(atlas.parts.filter((_,i)=>isLaunched(launches[i],at)).map(p=>p.conceptId));
+  assert.deepEqual([...present(start)],['fgb'],'the timeline starts with Zarya alone');
+  assert.equal(atlas.parts.filter((_,i)=>isLaunched(launches[i],null)).length,atlas.parts.length,'complete assembly shows every part');
+  const in2011=present(TIMELINE_END);assert.ok(in2011.has('ams')&&!in2011.has('mlm')&&!in2011.has('era'),'2011 holds every element except those launched later');
+  assert.ok(Math.abs(advanceAssembly(start,PLAY_MS_PER_YEAR)-start-YEAR_MS)<1,'play advances one year per two seconds');
+  let at=start,frames=0;while(at!==null){at=advanceAssembly(at,1000/60);frames++;}assert.ok(Math.abs(frames/60-(TIMELINE_END-start)/YEAR_MS*PLAY_MS_PER_YEAR/1000)<.05,'play stops at the complete station');
+  assert.equal(latestArrival(atlas,start).id,'fgb');assert.equal(latestArrival(atlas,Date.UTC(1998,11,4)).id,'node1');assert.equal(latestArrival(atlas,null).id,'mlm');
+  console.log(`${file}: packing at desktop/mobile aspect ratios, search/inspection contracts, and assembly timeline passed (${(frames/60).toFixed(1)} s of play).`);
 }
 const tap=new PointerTap();
 tap.down(1,10,10,5);assert.equal(tap.up(1,12,11),true);
