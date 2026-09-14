@@ -79,6 +79,8 @@ export default function StationScene({atlas,state,onSelect,onProgress,onError}:P
    lastState=null;loaded++;onProgress(Math.round(loaded/atlas.chunks.length*100));dirty=true;
   };
   (async()=>{try{let cursor=0;await Promise.all(Array.from({length:3},async()=>{while(cursor<atlas.chunks.length){const i=cursor++;await loadChunk(i);}}));if(!disposed){ready=true;dirty=true;}}catch(e){if(!disposed)onError(e instanceof Error?e.message:'Could not load the station model.');}})();
+  // Screen rectangle left free by the panels, dock, caption, and camera rail; the exploded inventory is framed into it.
+  const freeBox=()=>{const w=el.clientWidth,h=el.clientHeight;if(w<768)return{l:16,r:w-16,t:176,b:h-235};if(h<=600&&w>h)return{l:16,r:w-16,t:132,b:h-125};const narrow=w<=1000;return{l:narrow?258:300,r:w-(narrow?88:98),t:125,b:h-186};};
   const fit=(view:string,extent=0)=>{
    const mobile=el.clientWidth<768,effectiveView=extent>.8?'front':view;
    const reservedHeight=mobile?410:270;const availableAspect=Math.max(.35,(el.clientWidth-(mobile?40:340))/Math.max(160,el.clientHeight-reservedHeight));
@@ -87,10 +89,11 @@ export default function StationScene({atlas,state,onSelect,onProgress,onError}:P
    const viewWidth=effectiveView==='side'?stationSize.z:effectiveView==='three-quarter'?Math.max(stationSize.x,stationSize.z)*.92:stationSize.x;
    const viewHeight=stationSize.y*(effectiveView==='three-quarter'?1.18:1.08);
    const normalDistance=Math.max(viewHeight,viewWidth/availableAspect)/(2*Math.tan(halfFov))*panelScale*1.1;
-   const atlasDistance=Math.max(packingHeight,packingWidth/availableAspect)/(2*Math.tan(halfFov))*panelScale*1.08;
+   const fb=freeBox(),W=el.clientWidth,H=el.clientHeight,atlasDistance=Math.max(packingHeight*H/Math.max(80,fb.b-fb.t),packingWidth*H/Math.max(120,fb.r-fb.l))/(2*Math.tan(halfFov))*1.04;
+   if(!latest.current.isolate){if(extent>.001)camera.setViewOffset(W,H,(W/2-(fb.l+fb.r)/2)*extent,(H/2-(fb.t+fb.b)/2)*extent,W,H);else camera.clearViewOffset();}
    const distance=T.MathUtils.lerp(normalDistance,Math.max(.2,atlasDistance),extent);
    const direction=effectiveView==='front'?new T.Vector3(0,.02,1):effectiveView==='back'?new T.Vector3(0,.02,-1):effectiveView==='side'?new T.Vector3(1,.02,0):new T.Vector3(.35,.06,1).normalize();
-   controls.target.set(stationCenter.x+(extent>.1&&el.clientWidth>767?-packingWidth*.12:0),stationCenter.y,stationCenter.z);camera.position.copy(controls.target).addScaledVector(direction,distance);controls.update();dirty=true;
+   controls.target.set(stationCenter.x,stationCenter.y,stationCenter.z);camera.position.copy(controls.target).addScaledVector(direction,distance);controls.update();dirty=true;
   };
   const resize=()=>{layoutKey='';lastState=null;renderer.setPixelRatio(Math.min(devicePixelRatio,el.clientWidth<768||el.clientHeight<600?1.5:2));camera.aspect=el.clientWidth/el.clientHeight;camera.updateProjectionMatrix();renderer.setSize(el.clientWidth,el.clientHeight);fit(latest.current.view,amount);};const observer=new ResizeObserver(resize);observer.observe(el);
   const raycaster=new T.Raycaster(),pointer=new T.Vector2(),tap=new PointerTap(),worldBox=new T.Box3(),hitPoint=new T.Vector3();
@@ -116,7 +119,7 @@ export default function StationScene({atlas,state,onSelect,onProgress,onError}:P
     const visible=new Set(s.visible),selection=new Set(s.selected);
     const visibleParts=atlas.parts.filter(p=>s.isolate?selection.has(p.id):visible.has(p.system)||selection.has(p.id));
     const nextLayoutKey=visibleParts.map(p=>p.id).join(',')+':'+camera.aspect.toFixed(3);
-    if(nextLayoutKey!==layoutKey){const layout=createExplosionLayout(visibleParts,camera.aspect);packingWidth=layout.width;packingHeight=layout.height;atlas.parts.forEach((p,i)=>{const cell=layout.cells.get(p.id);offsets[i]=cell?new T.Vector3(cell.x,cell.y+stationCenter.y,0):centers[i].clone();});layoutKey=nextLayoutKey;if(amount>.05&&!s.isolate)fit(s.view,Math.max(0,(amount-.3)/.7));}
+    if(nextLayoutKey!==layoutKey){const layout=createExplosionLayout(visibleParts,(b=>(b.r-b.l)/Math.max(80,b.b-b.t))(freeBox()));packingWidth=layout.width;packingHeight=layout.height;atlas.parts.forEach((p,i)=>{const cell=layout.cells.get(p.id);offsets[i]=cell?new T.Vector3(cell.x,cell.y+stationCenter.y,(bounds[i].min.z-bounds[i].max.z)/2):centers[i].clone();});layoutKey=nextLayoutKey;if(amount>.05&&!s.isolate)fit(s.view,Math.max(0,(amount-.3)/.7));}
 
     atlas.parts.forEach((p,i)=>{
      const c=centers[i],destination=offsets[i];let dx=0,dy=0,dz=0;
@@ -124,7 +127,7 @@ export default function StationScene({atlas,state,onSelect,onProgress,onError}:P
      // vertical spread by system so overlapping structures separate. Phase two lerps into the packed inventory grid.
      const group=systemIndex[i],spread=stationSize.y*.3,startDx=(c.x-stationCenter.x)*.5,startDy=(group/Math.max(1,SYSTEMS.length-1)-.5)*spread;
      if(amount<=.45){const t=amount/.45;dx=startDx*t;dy=startDy*t;dz=0;}
-     else {const t=(amount-.45)/.55;dx=T.MathUtils.lerp(startDx,destination.x-c.x,t);dy=T.MathUtils.lerp(startDy,destination.y-c.y,t);dz=T.MathUtils.lerp(0,-c.z,t);}
+     else {const t=(amount-.45)/.55;dx=T.MathUtils.lerp(startDx,destination.x-c.x,t);dy=T.MathUtils.lerp(startDy,destination.y-c.y,t);dz=T.MathUtils.lerp(0,destination.z-c.z,t);}
      if(docking[i]>0){const k=docking[i]*DOCK_DISTANCE/Math.hypot(startDx,startDy);dx+=startDx*k;dy+=startDy*k;}
      const selected=selection.has(p.id);data.set([dx,dy,dz,(s.isolate?selected:visible.has(p.system)||selected)&&isLaunched(launches[i],s.assembly)?1:0],i*4);selectedData[i*4]=selected?255:0;
      markerPositions.set(data[i*4+3]>.5?[c.x+dx,c.y+dy,c.z+dz]:[10000,10000,10000],i*3);const mesh=pickers[i];if(mesh){mesh.position.set(dx,dy,dz);mesh.updateMatrix();mesh.updateMatrixWorld(true);}
