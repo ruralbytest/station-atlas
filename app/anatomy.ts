@@ -1,8 +1,8 @@
 export type SystemId = 'truss'|'us-modules'|'partner-modules'|'russian-modules'|'docking'|'robotics'|'platforms'|'vehicles'|'solar'|'thermal';
 // Order matters: the explode fan uses each system's index, so the truss separates first and the wings last.
 export const SYSTEMS: {id:SystemId;name:string;color:string;description:string}[] = [
- {id:'truss',name:'Integrated truss',color:'#c3cad3',description:'The integrated truss is the backbone of the station, a long beam that carries power, cooling, and robotics hardware. Rails along its face let a transporter carry the robotic arm between work sites.'},
- {id:'us-modules',name:'US modules',color:'#ece7da',description:'The US pressurized segment holds laboratories, connecting nodes, an airlock, and stowage where crews live and work. Its nodes join the modules together and offer ports for partner laboratories and visiting spacecraft.'},
+ {id:'truss',name:'Integrated truss',color:'#aab3bd',description:'The integrated truss is the backbone of the station, a long beam that carries power, cooling, and robotics hardware. Rails along its face let a transporter carry the robotic arm between work sites.'},
+ {id:'us-modules',name:'US modules',color:'#d9d4c6',description:'The US pressurized segment holds laboratories, connecting nodes, an airlock, and stowage where crews live and work. Its nodes join the modules together and offer ports for partner laboratories and visiting spacecraft.'},
  {id:'partner-modules',name:'Partner modules',color:'#8fc1ec',description:'Europe and Japan contributed laboratories that attach to the US segment. They host experiments inside and on external facilities exposed to space.'},
  {id:'russian-modules',name:'Russian segment',color:'#e0b98a',description:'The Russian segment began the station and provides propulsion, guidance, and life support. Its modules also serve as ports for crew and cargo spacecraft.'},
  {id:'docking',name:'Docking and adapters',color:'#f08c5a',description:'Pressurized mating adapters join spacecraft docking systems to berthing ports on the station. They keep a sealed passage open for crews moving between vehicles and modules.'},

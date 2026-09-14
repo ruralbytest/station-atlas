@@ -18,7 +18,7 @@ export default function StationScene({atlas,state,onSelect,onProgress,onError}:P
   const abort=new AbortController();
   let renderer:T.WebGLRenderer;
   try{renderer=new T.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});}catch{onError('This browser could not start the 3D viewer. Please try a browser with WebGL enabled.');return;}
-  renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<768?1.5:2));renderer.setClearColor('#05070c');renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;el.appendChild(renderer.domElement);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<768?1.5:2));renderer.setClearColor('#05070c');renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1;el.appendChild(renderer.domElement);
   renderer.domElement.setAttribute('aria-label','Interactive International Space Station model. Drag to orbit, pinch or scroll to zoom, and tap a structure to inspect it.');
   // Camera limits and framing come from the manifest's overall bounds, not a fixed human-scale stage.
   const [boundsLo,boundsHi]=atlas.bounds??[[-1,-1,-1],[1,1,1]];
@@ -29,8 +29,8 @@ export default function StationScene({atlas,state,onSelect,onProgress,onError}:P
   camera.position.set(stationCenter.x+stationDiagonal*.3,stationCenter.y+stationDiagonal*.18,stationCenter.z+stationDiagonal*.4);controls.target.copy(stationCenter);controls.enableDamping=true;controls.dampingFactor=.085;controls.minDistance=stationDiagonal*.0004;controls.maxDistance=stationDiagonal*3.5;controls.maxPolarAngle=Math.PI*.96;controls.addEventListener('change',()=>{dirty=true;});
   const pmrem=new T.PMREMGenerator(renderer),room=new RoomEnvironment(),env=pmrem.fromScene(room,.04);scene.environment=env.texture;room.dispose();pmrem.dispose();
   // Space has one light source: a low ambient (Earth- and structure-bounced light) plus a single strong sun.
-  scene.add(new T.AmbientLight(0x8fa2c9,.16));
-  const sun=new T.DirectionalLight(0xfff6ea,3.4);sun.position.set(-3,2.2,4);scene.add(sun);
+  scene.add(new T.AmbientLight(0x8fa2c9,.1));scene.add(new T.HemisphereLight(0x9fb4d8,0x05070c,.25));
+  const sun=new T.DirectionalLight(0xfff6ea,2.2);sun.position.set(-3,2.2,4);scene.add(sun);
   const width=T.MathUtils.ceilPowerOfTwo(atlas.parts.length),data=new Float32Array(width*4),partTexture=new T.DataTexture(data,width,1,T.RGBAFormat,T.FloatType);partTexture.needsUpdate=true;
   const selectedData=new Uint8Array(width*4),selectionTexture=new T.DataTexture(selectedData,width,1);selectionTexture.needsUpdate=true;
   const materials:T.Material[]=[],geometries:T.BufferGeometry[]=[],pickers:(T.Mesh|undefined)[]=[],centers=atlas.parts.map(p=>new T.Vector3().fromArray(p.bounds[0]).add(new T.Vector3().fromArray(p.bounds[1])).multiplyScalar(.5));
@@ -51,7 +51,7 @@ export default function StationScene({atlas,state,onSelect,onProgress,onError}:P
    return best;
   };
   const materialFor=(system:string)=>{
-   const m=new T.MeshStandardMaterial({color:SYSTEMS.find(s=>s.id===system)?.color??'#aebbb8',metalness:.08,roughness:.53,side:T.DoubleSide});
+   const m=new T.MeshStandardMaterial({color:SYSTEMS.find(s=>s.id===system)?.color??'#aebbb8',metalness:.08,roughness:.7,envMapIntensity:.7,side:T.DoubleSide});
    m.onBeforeCompile=shader=>{
     shader.uniforms.partState={value:partTexture};shader.uniforms.selectionState={value:selectionTexture};shader.uniforms.stateWidth={value:width};
     shader.vertexShader='attribute float partIndex; uniform sampler2D partState; uniform sampler2D selectionState; uniform float stateWidth; varying float partVisible; varying float partSelected;\n'+shader.vertexShader;
