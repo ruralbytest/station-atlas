@@ -22,7 +22,7 @@ for (const file of ['atlas.json']) {
   }
   let selected=null;
   const [find,inspect]=atlasTools(atlas,c=>{selected=c;});
-  const results=find.execute({query:'femur'});
+  const results=find.execute({query:'truss'});
   assert.ok(results.length>0);
   inspect.execute({id:results[0].id});
   const previous=selected;

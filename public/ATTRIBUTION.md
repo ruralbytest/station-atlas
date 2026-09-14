@@ -1,3 +1,17 @@
+# Station data attribution
+
+International Space Station model: "ISS complete 2011", NASA Johnson Space Center Visual Communications Lab, February 2011. Public domain; the package README asks that media using these files carry a courtesy line. Courtesy NASA (National Aeronautics and Space Administration).
+
+- Download: https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/3D%20Models/International%20Space%20Station%20(ISS)%20(C)%20(High%20Res)/International%20Space%20Station%20(ISS)%20(C)%20(High%20Res).7z
+- Catalog page: https://science.nasa.gov/3d-resources/international-space-station-iss-c-high-res/
+- Source scene: `Scenes/ISS complete_2011.lws` and the 47 Lightwave objects it loads (73 object layers).
+
+Adaptations (`scripts/convert-station.py`): each scene layer's world transform baked from the Lightwave motion channels and parent chain; the left-handed inch-based frame converted to right-handed meters with the truss on X, zenith on Y, and forward on Z; polygons triangulated; area-weighted normals with hard edges above 60 degrees; single-layer objects split into parts by surface name; geometry simplified with meshoptimizer at a 0.2% per-part error bound; normals quantized to signed 16-bit and packed into binary chunks. The 2011 scene predates Prichal, the Bishop airlock, the iROSA arrays, and Nauka's final position, and loads no visiting vehicles. Textures are not yet carried through the pipeline.
+
+## Previous dataset (no longer shipped)
+
+The sections below describe the anatomy data this viewer was forked from and are kept for the history of the code.
+
 # Anatomy data attribution
 
 BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International.
