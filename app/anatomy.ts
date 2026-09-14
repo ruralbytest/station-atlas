@@ -9,12 +9,12 @@ export const SYSTEMS: {id:SystemId;name:string;color:string;description:string}[
  {id:'robotics',name:'Robotics',color:'#f5cf4f',description:'Robotic arms and their mobile bases assemble, maintain, and service the station. They move large hardware, capture cargo ships, and support spacewalking astronauts.'},
  {id:'platforms',name:'External platforms',color:'#8fd6b0',description:'External platforms on the truss hold spare parts and science instruments in open space. Astronauts and robotic arms swap equipment on them without bringing it inside.'},
  {id:'vehicles',name:'Visiting vehicles',color:'#c9a3e6',description:'Crew and cargo spacecraft visit the station to deliver people, supplies, and propellant. The 2011 model places no visiting vehicles, so this group is empty here.'},
- {id:'solar',name:'Solar arrays',color:'#6f8bf0',description:'Solar array wings turn sunlight into electricity for every system on board. They rotate to follow the Sun as the station circles Earth.'},
+ {id:'solar',name:'Solar arrays',color:'#141b34',description:'Solar array wings turn sunlight into electricity for every system on board. They rotate to follow the Sun as the station circles Earth.'},
  {id:'thermal',name:'Radiators and thermal',color:'#9fe3e8',description:'Radiators shed the heat produced by equipment and crew into space. Coolant loops carry that heat out from the modules to these panels.'},
 ];
 export interface Part {id:string;name:string;conceptId:string;system:SystemId;chunk:number;positions:number;normals:number;indices:number;vertexCount:number;indexCount:number;bounds:[number[],number[]]}
 export interface Concept {id:string;name:string;elements:string[]}
-export interface Atlas {version:string;sex?:'male';source?:string;scope?:string;parts:Part[];concepts:Concept[];chunks:{url:string;bytes:number;gzip?:string;gzipBytes?:number}[];triangles:number}
+export interface Atlas {version:string;sex?:'male';source?:string;scope?:string;parts:Part[];concepts:Concept[];chunks:{url:string;bytes:number;gzip?:string;gzipBytes?:number}[];triangles:number;bounds?:[number[],number[]]}
 export type View = 'three-quarter'|'front'|'back'|'side';
 export interface SceneState {inspectorOpen?:boolean;explode:number;visible:SystemId[];selected:string[];isolate:boolean;view:View;rotate:boolean;reset:number}
 export const DEFAULT_VISIBLE:SystemId[] = ['truss','us-modules','partner-modules','russian-modules','docking','robotics','platforms','vehicles','solar','thermal'];
