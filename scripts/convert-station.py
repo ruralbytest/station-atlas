@@ -140,7 +140,7 @@ def append(values):
 def flush():
  global blob,chunk
  (out/f'station-{chunk}.bin').write_bytes(blob);chunks.append({'url':f'/models/station-{chunk}.bin','bytes':len(blob)});blob=bytearray();chunk+=1
-modules=station['modules'];layer_overrides=station.get('layers',{});surface_systems=station.get('surfaces',{})
+modules=station['modules'];layer_overrides=station.get('layers',{});surface_systems=station.get('surfaces',{});concept_names=station['concepts'];part_stems={}
 force_split=set(station.get('split',[]));no_split=set(station.get('nosplit',[]))
 for it in items:
  if 'file' not in it:continue
@@ -149,7 +149,7 @@ for it in items:
  layer=lwo['layers'].get(it['layer']-1)
  if layer is None or not layer['polys']:skipped.append(f'{key}: layer has no polygons');continue
  module=modules.get(stem);assert module,f'{stem}: add it to scripts/station.json'
- override=layer_overrides.get(key,{});concept_id=override.get('concept',slug(stem));name=override.get('name',module['name']);system=override.get('system',module['system'])
+ override=layer_overrides.get(key,{});concept_id=override.get('concept',module['concept']);assert concept_id in concept_names,f'{key}: concept {concept_id} has no name in station.json';name=override.get('name',module['name']);system=override.get('system',module['system'])
  if layer['name'] and key not in layer_overrides and len(lwo['layers'])>1:name=f"{module['name']}: {clean(layer['name'])}"
  m=world(it);m=np.vstack([FRAME@m[:3,:],[0,0,0,1]]);points=(layer['points'].astype(np.float64)@m[:3,:3].T+m[:3,3]).astype(np.float32)
  split=(key in force_split) or (len(lwo['layers'])==1 and key not in no_split)
@@ -169,12 +169,21 @@ for it in items:
   part_name=f'{name}: {clean(surface)}' if split and surface and clean(surface) else name
   part_system=surface_systems.get(surface,system) if split else system
   parts.append({'id':pid,'name':part_name,'conceptId':concept_id,'system':part_system,'item':it['id'],'chunk':chunk,'positions':po,'normals':no,'indices':io,'vertexCount':len(positions),'indexCount':len(indices),'bounds':[positions.min(0).tolist(),positions.max(0).tolist()]})
-  concepts.setdefault(concept_id,{'id':concept_id,'name':name if 'concept' in override else module['name'],'elements':[]})['elements'].append(pid)
+  concepts.setdefault(concept_id,{'id':concept_id,'name':concept_names[concept_id],'elements':[]})['elements'].append(pid);part_stems[pid]=stem
   total_triangles+=len(indices)//3;record['parts']+=1
  for number,other in lwo['layers'].items():
   note=f"{stem}#{number+1} ({other['name'] or 'unnamed'}): not loaded by the scene"
   if other['polys'] and note not in skipped and not any(o.get('file')==it['file'] and o['layer']==number+1 for o in items):skipped.append(note)
 flush()
+# Group concepts: the plan's named assemblies and module folders that hold several flight elements. Parts keep their element concept.
+for g in station.get('groups',[]):
+ assert g['id'] not in concepts,f"group {g['id']} collides with an element concept"
+ for c in g.get('concepts',[]):assert c in concepts,f"group {g['id']}: unknown concept {c}"
+ elements=[p['id'] for p in parts if p['conceptId'] in g.get('concepts',[]) or part_stems[p['id']] in g.get('stems',[])]
+ assert elements,f"group {g['id']} is empty"
+ concepts[g['id']]={'id':g['id'],'name':g['name'],'elements':elements}
+unused=set(concept_names)-{p['conceptId'] for p in parts}
+assert not unused,f'named concepts with no parts: {sorted(unused)}'
 lo=np.min([p['bounds'][0] for p in parts],axis=0);hi=np.max([p['bounds'][1] for p in parts],axis=0);center=((lo+hi)/2).tolist()
 # Center the station on the origin so the viewer can derive its stage from the manifest bounds.
 for c in chunks:

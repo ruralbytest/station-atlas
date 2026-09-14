@@ -1,0 +1,992 @@
+{
+ "about": "Sourced facts behind EXPLANATIONS and SOURCES in app/anatomy.ts. Each fact is [value, url, ...more urls]; every url is a nasa.gov or esa.int page, and together they support the whole value. 'Mass' is the module mass the source lists, which is not always stated as launch mass.",
+ "facts": {
+  "lab": {
+   "launch": [
+    "February 7, 2001",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-98)",
+    "https://www.nasa.gov/mission/sts-98/"
+   ],
+   "agency": [
+    "NASA, built by Boeing",
+    "https://www.nasa.gov/missions/station/backbone-for-science-twenty-years-on-international-space-station-structures-managed-by-nasa-marshall-still-soar/"
+   ],
+   "mass": [
+    "14,515 kg (32,000 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "The primary US research laboratory, supporting experiments across a wide range of science.",
+    "https://www.nasa.gov/international-space-station/destiny-laboratory-module/"
+   ]
+  },
+  "node1": {
+   "launch": [
+    "December 4, 1998",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-88)",
+    "https://www.nasa.gov/mission/sts-88/"
+   ],
+   "agency": [
+    "NASA, built by Boeing",
+    "https://www.nasa.gov/missions/station/backbone-for-science-twenty-years-on-international-space-station-structures-managed-by-nasa-marshall-still-soar/"
+   ],
+   "mass": [
+    "11,895 kg (26,225 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "The first US-built element launched, it connects the US and Russian segments.",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ]
+  },
+  "node2": {
+   "launch": [
+    "October 23, 2007",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-120)",
+    "https://www.nasa.gov/mission/sts-120/"
+   ],
+   "agency": [
+    "NASA, built in Europe under an ESA contract",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/International_Space_Station/Node_2_Connecting_Module"
+   ],
+   "mass": [
+    "14,787 kg (32,599 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "A connecting port and passageway to the international laboratories and visiting cargo spacecraft.",
+    "https://www.nasa.gov/international-space-station/harmony-module/"
+   ]
+  },
+  "node3": {
+   "launch": [
+    "February 8, 2010",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-130)",
+    "https://www.nasa.gov/mission/sts-130/"
+   ],
+   "agency": [
+    "NASA, built by Thales Alenia Space under contract to ESA",
+    "https://www.nasa.gov/international-space-station/tranquility-module/"
+   ],
+   "mass": [
+    "17,992 kg (39,665 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "Houses the air revitalization, oxygen generation and water recovery systems, plus the crew toilet and exercise equipment.",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ]
+  },
+  "cupola": {
+   "launch": [
+    "February 8, 2010",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-130)",
+    "https://www.nasa.gov/mission/sts-130/"
+   ],
+   "agency": [
+    "Provided by ESA, with ownership transferred to NASA",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Node-3_Cupola/ESA_transfer_ownership_of_European-built_ISS_observation_module_to_NASA"
+   ],
+   "mass": [
+    "1,880 kg (4,136 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "A windowed module for watching robotic work, arriving vehicles and spacewalks.",
+    "https://www.nasa.gov/international-space-station/cupola/"
+   ]
+  },
+  "pmm": {
+   "launch": [
+    "February 24, 2011",
+    "https://www.nasa.gov/mission/sts-133/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-133)",
+    "https://www.nasa.gov/mission/sts-133/"
+   ],
+   "agency": [
+    "NASA and the Italian Space Agency (ASI), built in Italy",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "4,428 kg (9,784 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "Provides space for cargo storage and scientific use.",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ]
+  },
+  "al": {
+   "launch": [
+    "July 12, 2001",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-104)",
+    "https://www.nasa.gov/mission/sts-104/"
+   ],
+   "agency": [
+    "NASA, built by Boeing",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "9,923 kg (21,877 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "The primary airlock for spacewalks in US spacesuits.",
+    "https://www.nasa.gov/international-space-station/quest-airlock/"
+   ]
+  },
+  "pma1": {
+   "launch": [
+    "December 4, 1998",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-88)",
+    "https://www.nasa.gov/international-space-station/unity-module/",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "agency": [
+    "NASA, built by Boeing",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "1,589 kg (3,504 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "A conical pressurized adapter that links the US and Russian segments.",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ]
+  },
+  "pma2": {
+   "launch": [
+    "December 4, 1998",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-88)",
+    "https://www.nasa.gov/international-space-station/unity-module/",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "agency": [
+    "NASA, built by Boeing",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "1,376 kg (3,033 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "A conical adapter that served as the Space Shuttle's primary docking port.",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ]
+  },
+  "pma3": {
+   "launch": [
+    "October 11, 2000",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-92)",
+    "https://www.nasa.gov/mission/sts-92/"
+   ],
+   "agency": [
+    "NASA, built by Boeing",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "1,183 kg (2,607 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "A conical adapter delivered as a docking port for later shuttle missions.",
+    "https://www.nasa.gov/mission/sts-92/"
+   ]
+  },
+  "z1": {
+   "launch": [
+    "October 11, 2000",
+    "https://www.nasa.gov/mission/sts-92/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-92)",
+    "https://www.nasa.gov/mission/sts-92/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": null,
+   "purpose": [
+    "Holds control moment gyroscopes that steer the station without using thrusters.",
+    "https://www.nasa.gov/history/space-station-20th-sts-92-resumes-international-space-station-assembly/"
+   ]
+  },
+  "s0": {
+   "launch": [
+    "April 8, 2002",
+    "https://www.nasa.gov/mission/sts-110/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-110)",
+    "https://www.nasa.gov/mission/sts-110/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "27,830 lb (about 12,600 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-110-press-kit.pdf"
+   ],
+   "purpose": [
+    "The center truss segment, carrying navigation devices, computers, and cooling and power systems.",
+    "https://www.nasa.gov/mission/sts-110/"
+   ]
+  },
+  "s1": {
+   "launch": [
+    "October 7, 2002",
+    "https://www.nasa.gov/mission/sts-112/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-112)",
+    "https://www.nasa.gov/mission/sts-112/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "27,717 lb (about 12,600 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-112-press-kit.pdf"
+   ],
+   "purpose": [
+    "Carries radiators through which ammonia coolant flows to keep the station cool.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-112-press-kit.pdf"
+   ]
+  },
+  "p1": {
+   "launch": [
+    "November 23, 2002",
+    "https://www.nasa.gov/mission/sts-113/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-113)",
+    "https://www.nasa.gov/mission/sts-113/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "27,506 lb (about 12,500 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-sts-113-press-kit.pdf"
+   ],
+   "purpose": [
+    "Houses part of the Active Thermal Control System, which regulates the temperature of station electronics.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-sts-113-press-kit.pdf"
+   ]
+  },
+  "p3-4": {
+   "launch": [
+    "September 9, 2006",
+    "https://www.nasa.gov/mission/sts-115/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-115)",
+    "https://www.nasa.gov/mission/sts-115/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "17.5 tons",
+    "https://www.nasa.gov/mission/sts-115/"
+   ],
+   "purpose": [
+    "Carries solar arrays that provide one quarter of the completed station's power generation.",
+    "https://www.nasa.gov/image-article/atlantis-lifts-off-4/"
+   ]
+  },
+  "s3-4": {
+   "launch": [
+    "June 8, 2007",
+    "https://www.nasa.gov/mission/sts-117/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-117)",
+    "https://www.nasa.gov/mission/sts-117/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "35,678 lb (about 16,200 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/169469main-sts-117-press-kit-final.pdf"
+   ],
+   "purpose": [
+    "Adds the station's third set of solar array wings for more power.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/169469main-sts-117-press-kit-final.pdf"
+   ]
+  },
+  "p5": {
+   "launch": [
+    "December 9, 2006",
+    "https://www.nasa.gov/mission/sts-116/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-116)",
+    "https://www.nasa.gov/mission/sts-116/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "4,110 lb (1,864 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/162182main-sts-116-press-kit.pdf"
+   ],
+   "purpose": [
+    "A short spacer that connects power and cooling lines between the P4 and P6 solar modules.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/162182main-sts-116-press-kit.pdf"
+   ]
+  },
+  "s5": {
+   "launch": [
+    "August 8, 2007",
+    "https://www.nasa.gov/mission/sts-118/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-118)",
+    "https://www.nasa.gov/mission/sts-118/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "4,010 lb (about 1,820 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/182728main-sts-118-press-kit.pdf"
+   ],
+   "purpose": [
+    "A short spacer that connects power and cooling lines between the S4 and S6 solar modules.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/182728main-sts-118-press-kit.pdf"
+   ]
+  },
+  "p6": {
+   "launch": [
+    "November 30, 2000",
+    "https://www.nasa.gov/mission/sts-97/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-97)",
+    "https://www.nasa.gov/mission/sts-97/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "15.4 metric tons (15,400 kg), including arrays, radiators and batteries",
+    "https://www.nasa.gov/mission/sts-97/"
+   ],
+   "purpose": [
+    "Delivered the first US solar power system; first mounted atop Z1, it was later moved to the port end of the truss.",
+    "https://www.nasa.gov/mission/sts-97/",
+    "https://www.nasa.gov/international-space-station/integrated-truss-structure/"
+   ]
+  },
+  "s6": {
+   "launch": [
+    "March 15, 2009",
+    "https://www.nasa.gov/mission/sts-119/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-119)",
+    "https://www.nasa.gov/mission/sts-119/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "31,060 lb (about 14,100 kg), on orbit",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/304681main-sts119-press-kit.pdf"
+   ],
+   "purpose": [
+    "The outermost starboard segment, carrying the last of four solar power modules for generating and storing power.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/304681main-sts119-press-kit.pdf"
+   ]
+  },
+  "columbus": {
+   "launch": [
+    "February 7, 2008",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Columbus/Columbus_Mission_facts"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-122)",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Columbus/Columbus_Mission_facts"
+   ],
+   "agency": [
+    "ESA, built by an Astrium-led consortium",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Columbus/European_Columbus_laboratory"
+   ],
+   "mass": [
+    "12,775 kg at launch, including 2,500 kg of payload",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Columbus/European_Columbus_laboratory"
+   ],
+   "purpose": [
+    "Europe's research laboratory, hosting experiments in materials science, fluid physics and life science.",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Columbus/European_Columbus_laboratory"
+   ]
+  },
+  "jem-pm": {
+   "launch": [
+    "May 31, 2008",
+    "https://www.nasa.gov/mission/sts-124/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-124)",
+    "https://www.nasa.gov/mission/sts-124/"
+   ],
+   "agency": [
+    "JAXA, built with Mitsubishi Heavy Industries",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "15,900 kg (35,050 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "Kibo's main experiment module, housing the core systems that run the whole Kibo facility.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/228145main-sts124-presskit2.pdf"
+   ]
+  },
+  "jem-elm-ps": {
+   "launch": [
+    "March 11, 2008",
+    "https://www.nasa.gov/mission/sts-123/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-123)",
+    "https://www.nasa.gov/mission/sts-123/"
+   ],
+   "agency": [
+    "JAXA, built with Mitsubishi Heavy Industries",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "4,200 kg (9,260 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "Kibo's pressurized stowage section, which flew up carrying eight racks for the facility.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/215905main-sts123-press-kit-b.pdf"
+   ]
+  },
+  "jemrms": {
+   "launch": [
+    "May 31, 2008",
+    "https://www.nasa.gov/mission/sts-124/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-124)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/228145main-sts124-presskit2.pdf",
+    "https://www.nasa.gov/mission/sts-124/"
+   ],
+   "agency": [
+    "JAXA",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "780 kg for the main arm",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/228145main-sts124-presskit2.pdf"
+   ],
+   "purpose": [
+    "A robotic arm that handles experiments and performs maintenance on Kibo's exposed facility.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/228145main-sts124-presskit2.pdf"
+   ]
+  },
+  "jem-ef": {
+   "launch": [
+    "July 15, 2009",
+    "https://www.nasa.gov/history/15-years-ago-sts-127-delivers-japanese-external-platform-to-space-station/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-127)",
+    "https://www.nasa.gov/mission/sts-127/",
+    "https://www.nasa.gov/history/15-years-ago-sts-127-delivers-japanese-external-platform-to-space-station/"
+   ],
+   "agency": [
+    "JAXA",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "4,000 kg (8,820 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "An outdoor platform where experiments are exposed to space for astronomy, Earth observation and materials exposure research.",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ]
+  },
+  "era": {
+   "launch": [
+    "July 21, 2021",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/European_Robotic_Arm_is_launched_into_space"
+   ],
+   "vehicle": [
+    "a Proton rocket, attached to Russia's Nauka module",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/European_Robotic_Arm_is_launched_into_space",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/International_Space_Station/European_Robotic_Arm"
+   ],
+   "agency": [
+    "ESA, built by a consortium led by Airbus Defence and Space Netherlands",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/International_Space_Station/A_European_Robotic_Arm_to_handle_the_Space_Station"
+   ],
+   "mass": [
+    "630 kg",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/International_Space_Station/Spotlight_on_European_Robotic_Arm"
+   ],
+   "purpose": [
+    "A robotic arm for the Russian segment that moves payloads outside and carries spacewalkers.",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/International_Space_Station/A_European_Robotic_Arm_to_handle_the_Space_Station"
+   ]
+  },
+  "ssrms": {
+   "launch": [
+    "April 19, 2001",
+    "https://www.nasa.gov/mission/sts-100/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-100)",
+    "https://www.nasa.gov/history/space-station-20th-sts-100-brings-canadian-robotic-arm-to-the-space-station/"
+   ],
+   "agency": [
+    "the Canadian Space Agency (CSA)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "1,497 kg (3,300 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "The station's main robotic arm, used to move supplies, equipment and astronauts and to capture visiting spacecraft.",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ]
+  },
+  "mbs": {
+   "launch": [
+    "June 5, 2002",
+    "https://www.nasa.gov/mission/sts-111/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-111)",
+    "https://www.nasa.gov/mission/sts-111/"
+   ],
+   "agency": [
+    "the Canadian Space Agency (CSA)",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "1,450 kg (3,196 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "A movable work platform on the truss rails that serves as a base for Canadarm2 and Dextre.",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ]
+  },
+  "mt": {
+   "launch": [
+    "April 8, 2002",
+    "https://www.nasa.gov/mission/sts-110/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-110), built into the S0 truss",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-110-press-kit.pdf",
+    "https://www.nasa.gov/mission/sts-110/"
+   ],
+   "agency": [
+    "NASA, built by Boeing",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-110-press-kit.pdf"
+   ],
+   "mass": [
+    "1,950 lb (about 885 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-110-press-kit.pdf"
+   ],
+   "purpose": [
+    "A rail car that carries the Mobile Servicing System along the station's truss.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-110-press-kit.pdf"
+   ]
+  },
+  "spdm": {
+   "launch": [
+    "March 11, 2008",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-123)",
+    "https://www.nasa.gov/mission/sts-123/"
+   ],
+   "agency": [
+    "the Canadian Space Agency (CSA)",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "1,662 kg (3,664 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "purpose": [
+    "A two-armed robot that does fine maintenance outside the station, such as changing batteries and cameras.",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ]
+  },
+  "obss": {
+   "launch": [
+    "May 16, 2011",
+    "https://www.nasa.gov/mission/sts-134/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-134)",
+    "https://www.nasa.gov/reference/the-space-shuttle/",
+    "https://www.nasa.gov/mission/sts-134/"
+   ],
+   "agency": [
+    "NASA, as Space Shuttle Endeavour hardware",
+    "https://www.nasa.gov/reference/the-space-shuttle/"
+   ],
+   "mass": null,
+   "purpose": [
+    "Left on the truss as an extension that lengthens the reach of the station's robotic arm.",
+    "https://www.nasa.gov/image-article/ffinal-spacewalk-sts-134/"
+   ]
+  },
+  "ceta": {
+   "launch": [
+    "October 7, 2002 and November 23, 2002",
+    "https://www.nasa.gov/mission/sts-112/",
+    "https://www.nasa.gov/mission/sts-113/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-112) and Space Shuttle Endeavour (STS-113), each built into a truss segment",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-112-press-kit.pdf",
+    "https://www.nasa.gov/mission/sts-112/",
+    "https://www.nasa.gov/mission/sts-113/"
+   ],
+   "agency": [
+    "NASA, engineered by Lockheed Martin and NASA teams",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-112-press-kit.pdf"
+   ],
+   "mass": null,
+   "purpose": [
+    "Hand-pushed carts that move spacewalkers along the truss rails and double as work platforms.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/spk-sts-113-press-kit.pdf"
+   ]
+  },
+  "fgb": {
+   "launch": [
+    "November 20, 1998",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "a Proton-K rocket",
+    "https://www.nasa.gov/international-space-station/zarya-module/"
+   ],
+   "agency": [
+    "NASA, which funded it; built in Russia by Khrunichev under a Boeing subcontract",
+    "https://www.nasa.gov/international-space-station/zarya-module/"
+   ],
+   "mass": [
+    "42,600 lb (about 19,300 kg)",
+    "https://www.nasa.gov/international-space-station/zarya-module/"
+   ],
+   "purpose": [
+    "The first station element; it once supplied power, communications and attitude control, and now serves mainly for storage and propulsion.",
+    "https://www.nasa.gov/wp-content/uploads/2017/09/np-2015-05-022-jsc-iss-guide-2015-update-111015-508c.pdf"
+   ]
+  },
+  "sm": {
+   "launch": [
+    "July 12, 2000",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "a Proton-K rocket",
+    "https://www.nasa.gov/international-space-station/zvezda-service-module/"
+   ],
+   "agency": [
+    "Roscosmos, built by RSC Energia",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "24,604 kg (54,242 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2017/09/np-2015-05-022-jsc-iss-guide-2015-update-111015-508c.pdf"
+   ],
+   "purpose": [
+    "Provides living quarters, life support, power distribution, data processing, flight control and propulsion.",
+    "https://www.nasa.gov/international-space-station/zvezda-service-module/"
+   ]
+  },
+  "mrm1": {
+   "launch": [
+    "May 14, 2010",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-132)",
+    "https://www.nasa.gov/international-space-station/rassvet-mini-research-module/"
+   ],
+   "agency": [
+    "Roscosmos, built by RSC Energia",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "5,075 kg (11,188 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2017/09/np-2015-05-022-jsc-iss-guide-2015-update-111015-508c.pdf"
+   ],
+   "purpose": [
+    "A small Russian module used mainly for cargo storage and some research.",
+    "https://www.nasa.gov/international-space-station/rassvet-mini-research-module/"
+   ]
+  },
+  "mrm2": {
+   "launch": [
+    "November 10, 2009",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "a Soyuz rocket",
+    "https://www.nasa.gov/news-release/poisk-poised-for-live-nasa-tv-space-station-docking/"
+   ],
+   "agency": [
+    "Roscosmos, built by RSC Energia",
+    "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf"
+   ],
+   "mass": [
+    "3,795 kg (8,367 lb)",
+    "https://www.nasa.gov/wp-content/uploads/2017/09/np-2015-05-022-jsc-iss-guide-2015-update-111015-508c.pdf"
+   ],
+   "purpose": [
+    "A docking port for Soyuz and Progress vehicles and a place to prepare for Russian spacewalks.",
+    "https://www.nasa.gov/international-space-station/poisk-mini-research-module-2-yezof/"
+   ]
+  },
+  "mlm": {
+   "launch": [
+    "July 21, 2021",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "a Proton-M rocket",
+    "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/International_Space_Station/Building_the_International_Space_Station3"
+   ],
+   "agency": [
+    "Roscosmos",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "about 23 tons",
+    "https://www.nasa.gov/blogs/spacestation/2021/07/21/liftoff-multipurpose-laboratory-module-nauka-launches-to-space-station/"
+   ],
+   "purpose": [
+    "A science facility, docking port and spacewalk airlock for the Russian segment.",
+    "https://www.nasa.gov/blogs/spacestation/2021/07/21/liftoff-multipurpose-laboratory-module-nauka-launches-to-space-station/"
+   ]
+  },
+  "esp1": {
+   "launch": [
+    "March 8, 2001",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-102)",
+    "https://www.nasa.gov/international-space-station/external-stowage-platforms-1-3/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": null,
+   "purpose": [
+    "An external pallet that holds spare parts outside the station.",
+    "https://www.nasa.gov/international-space-station/external-stowage-platforms-1-3/"
+   ]
+  },
+  "esp2": {
+   "launch": [
+    "July 26, 2005",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-114)",
+    "https://www.nasa.gov/international-space-station/external-stowage-platforms-1-3/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": null,
+   "purpose": [
+    "A larger external pallet with room for up to eight spare parts.",
+    "https://www.nasa.gov/international-space-station/external-stowage-platforms-1-3/"
+   ]
+  },
+  "esp3": {
+   "launch": [
+    "August 8, 2007",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-118)",
+    "https://www.nasa.gov/international-space-station/external-stowage-platforms-1-3/"
+   ],
+   "agency": [
+    "NASA",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "mass": [
+    "about 7,495 lb (3,400 kg) at launch with its spare parts",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/182728main-sts-118-press-kit.pdf"
+   ],
+   "purpose": [
+    "An unpressurized external pallet that can hold up to seven station spare parts.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/182728main-sts-118-press-kit.pdf"
+   ]
+  },
+  "elc1": {
+   "launch": [
+    "November 16, 2009",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-129)",
+    "https://www.nasa.gov/international-space-station/express-logistics-carriers-1-4/"
+   ],
+   "agency": [
+    "NASA, built by NASA Goddard Space Flight Center",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/398418main-sts129-press-kit.pdf"
+   ],
+   "mass": [
+    "about 13,850 lb (6,280 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/398418main-sts129-press-kit.pdf"
+   ],
+   "purpose": [
+    "A truss-mounted platform for external science payloads and spare hardware.",
+    "https://www.nasa.gov/international-space-station/express-logistics-carriers-1-4/",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/398418main-sts129-press-kit.pdf"
+   ]
+  },
+  "elc2": {
+   "launch": [
+    "November 16, 2009",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Atlantis (STS-129)",
+    "https://www.nasa.gov/international-space-station/express-logistics-carriers-1-4/"
+   ],
+   "agency": [
+    "NASA, built by NASA Goddard Space Flight Center",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/398418main-sts129-press-kit.pdf"
+   ],
+   "mass": [
+    "13,400 lb (about 6,080 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/398418main-sts129-press-kit.pdf"
+   ],
+   "purpose": [
+    "A truss-mounted platform for external science payloads and spare hardware.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/398418main-sts129-press-kit.pdf"
+   ]
+  },
+  "elc3": {
+   "launch": [
+    "May 16, 2011",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-134)",
+    "https://www.nasa.gov/international-space-station/express-logistics-carriers-1-4/"
+   ],
+   "agency": null,
+   "mass": null,
+   "purpose": [
+    "A truss-mounted carrier that delivered seven large spare parts for the station.",
+    "https://www.nasa.gov/history/space-station-20th-sts-134-delivers-alpha-magnetic-spectrometer-to-the-space-station/"
+   ]
+  },
+  "elc4": {
+   "launch": [
+    "February 24, 2011",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Discovery (STS-133)",
+    "https://www.nasa.gov/international-space-station/express-logistics-carriers-1-4/"
+   ],
+   "agency": [
+    "NASA, built by Orbital Sciences Corporation",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/491387main-sts-133-press-kit.pdf"
+   ],
+   "mass": [
+    "about 8,161 lb (3,700 kg)",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/491387main-sts-133-press-kit.pdf"
+   ],
+   "purpose": [
+    "A truss-mounted pallet that carries experiments and stores spare hardware for robotic replacement.",
+    "https://www.nasa.gov/wp-content/uploads/2023/05/491387main-sts-133-press-kit.pdf"
+   ]
+  },
+  "ams": {
+   "launch": [
+    "May 16, 2011",
+    "https://www.nasa.gov/international-space-station/international-space-station-assembly-elements/"
+   ],
+   "vehicle": [
+    "Space Shuttle Endeavour (STS-134)",
+    "https://www.nasa.gov/alpha-magnetic-spectrometer/about-alpha-magnetic-spectrometer/"
+   ],
+   "agency": [
+    "NASA and the US Department of Energy, with an international science consortium",
+    "https://www.nasa.gov/history/space-station-20th-sts-134-delivers-alpha-magnetic-spectrometer-to-the-space-station/"
+   ],
+   "mass": [
+    "18,739 lb (about 8,500 kg)",
+    "https://www.nasa.gov/international-space-station/alpha-magnetic-spectrometer-ams-02/"
+   ],
+   "purpose": [
+    "A particle detector that searches for antimatter and dark matter and precisely measures cosmic rays.",
+    "https://www.nasa.gov/alpha-magnetic-spectrometer/about-alpha-magnetic-spectrometer/"
+   ]
+  }
+ },
+ "gaps": [
+  "z1, esp1, esp2, obss, ceta, elc3: no mass found on a nasa.gov or esa.int page (ceta has only its bare frame weight, which would mislead).",
+  "elc3: agency left out. NASA's assembly-elements page lists it under AEB (Brazilian Space Agency), while the 2010 NASA reference guide labels ELCs as NASA hardware.",
+  "Mass conflicts resolved in favor of the cited page: node2 and node3 (ESA gives lower launch masses), fgb (2015 guide gives 24,968 kg), jem-elm-ps (STS-123 press kit gives 18,490 lb with racks), spdm (press kit gives 1,560 kg), ams (other NASA pages give nearly 15,000 lb or 7.5 t).",
+  "p3-4 and mlm masses are quoted in tons as the source states, without converting to kg."
+ ]
+}
