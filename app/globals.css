@@ -103,3 +103,32 @@ h1 .edition{font-family:inherit;font-weight:500;font-size:10px;letter-spacing:.0
  .detail-sheet{bottom:calc(204px + env(safe-area-inset-bottom))!important}
 }
 @media(max-height:600px) and (orientation:landscape){.bottom-dock{width:min(660px,calc(100% - 40px))}.timeline-control{gap:10px;padding-right:14px}}
+
+/* Dark glass theme: panels sit in the space scene instead of floating white over it. */
+:root{color:#e6e9ee;background:#05070c;--background:#05070c;--foreground:#e6e9ee;--card:#12161d;--card-foreground:#e6e9ee;--popover:#141922;--popover-foreground:#e6e9ee;--primary:#d7e0ea;--primary-foreground:#0b0f15;--secondary:#1b212b;--secondary-foreground:#e6e9ee;--muted:#1b212b;--muted-foreground:#9aa4b0;--accent:#222a35;--accent-foreground:#e6e9ee;--destructive:#e07a68;--border:#ffffff14;--input:#ffffff1f;--ring:#8fb3c9;color-scheme:dark}
+button:focus-visible,a:focus-visible{outline-color:#7fb8c4}button:not([data-slot]):hover{color:#fff;background:#ffffff0d}
+.glass{background:#12161dd9;border:1px solid #ffffff14;box-shadow:0 2px 6px #0000002e,0 16px 48px #00000059}
+h1{color:var(--foreground)}h1 .edition{color:#9aa4b0}.eyebrow,.identity-meta{color:#9aa4b0}.identity-meta span{color:#6b7580}
+.top-actions button{background:#12161dd9;color:#c3cbd4}.top-actions button:hover{background:#1b212b;color:#fff}.top-actions kbd{border-color:#ffffff26}
+.panel-heading{color:#e6e9ee}.panel-heading .small-number{background:#1b212b;color:#9aa4b0}.small-number{color:#9aa4b0}
+.layer-presets{background:#0b0f15}.layer-presets button{color:#9aa4b0}.layer-presets button[aria-pressed=true]{background:#2a3340;color:#fff;box-shadow:0 1px 3px #00000040}
+.system-name{color:#8d97a2}.enabled .system-name{color:#d5dbe2}.system-dot{width:7px;height:7px;box-shadow:0 0 0 1px #ffffff30}.system-count{color:#8d97a2}.system-list,.detail-scroll{scrollbar-color:#3a4450 transparent}
+.system-row [data-slot=switch]{--primary:#6f8ea3}.system-row [data-slot=switch-thumb]{background:#e6e9ee}
+.panel-foot{border-top-color:#ffffff12;color:#9aa4b0}.panel-foot button{color:#9aa4b0}
+.view-controls button{color:#9aa4b0}.view-controls .active{background:#d7e0ea;color:#0b0f15}.view-controls i{background:#ffffff1a}
+.scene-caption{color:#9aa4b0}.caption-line{background:#ffffff26}
+.explode-label{color:#d5dbe2}.explode-label output{background:#1b212b;border-color:#ffffff14;color:#e6e9ee}.explode-label output span{color:#9aa4b0}.slider-endpoints{color:#9aa4b0}
+.explode-control [data-slot=slider-thumb]{border-color:#12161d;background:#d7e0ea;box-shadow:0 0 0 1px #d7e0ea40,0 2px 5px #00000060}
+.dock-reset{color:#aab4be;border-left-color:#ffffff14}.timeline-control{border-right-color:#ffffff14}.timeline-play{border-color:#ffffff33;color:#e6e9ee}
+.studio-footer,.studio-footer button{color:#9aa4b0}.studio-footer b{color:#5f6975}
+.loading span{color:#9aa4b0}.loading-track{background:#ffffff1a}.error button{border-color:#ffffff29}
+.search-panel [data-slot=input-group]{background:#0b0f15}.search-note{color:#9aa4b0}
+.anatomy-search-results{background:#141922!important;border-color:#ffffff14!important;color:#e6e9ee!important}
+.detail-sheet{box-shadow:0 15px 70px #00000073}.structure-description{color:#aab4be!important}.context-note{color:#9aa4b0}.structure-meta{border-color:#ffffff14;color:#9aa4b0}.structure-meta strong{color:#d5dbe2}
+.primary-action{background:#d7e0ea;color:#0b0f15!important;border-color:#d7e0ea}.primary-action:hover,.primary-action.active{background:#b9c7d4}.secondary-action{color:#aab4be}
+.member-list h3{color:#9aa4b0}.member-list button{border-bottom-color:#ffffff12}.detail-actions{border-top-color:#ffffff14}.source-link{color:#8fc1d9}
+.about-copy{color:#aab4be}.about-copy strong,.about-copy h3{color:#e6e9ee}.about-copy a{color:#8fc1d9}
+.anatomy-choice [data-slot=select-trigger]{background:#12161dd9;border-color:#ffffff1f}
+.part-hover{background:#1b2430f5;border:1px solid #ffffff1a;box-shadow:0 5px 18px #00000060}
+@media(max-width:767px){.layers-panel.mobile-open{background:#12161df5}.bottom-dock{background:#12161ded}.dock-layers{border-right-color:#ffffff14}.detail-sheet{background:#12161df5}.timeline-control{border-bottom-color:#ffffff14}}
+.system-row [data-slot=switch][data-unchecked] [data-slot=switch-thumb]{background:#7d8792}
