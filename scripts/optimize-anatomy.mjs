@@ -3,6 +3,7 @@ import {MeshoptSimplifier} from 'meshoptimizer';
 await MeshoptSimplifier.ready;
 const name=process.argv[2]??'atlas.json',prefix=name.includes('female')?'female':'body';
 const dir=new URL('../public/models/',import.meta.url),manifest=JSON.parse(fs.readFileSync(new URL(name,dir),'utf8'));
+if(manifest.materials)throw new Error('Source-material station geometry must remain lossless. Use convert-station.py and publish-model.mjs; this legacy simplifier drops surface attributes and disconnected details.');
 const originals=manifest.chunks.map(c=>c.url.split('/').pop());
 if(manifest.optimized)throw new Error('Already optimized. Re-run the source converter first.');
 const source=manifest.chunks.map(c=>fs.readFileSync(new URL(c.url.split('/').pop(),dir)));

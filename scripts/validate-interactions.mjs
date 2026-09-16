@@ -31,6 +31,8 @@ for (const file of ['atlas.json']) {
   assert.equal(selected,previous);
   assert.throws(()=>find.execute({query:' '}));
   const launches=partLaunchTimes(atlas),start=timelineStart(atlas),present=at=>new Set(atlas.parts.filter((_,i)=>isLaunched(launches[i],at)).map(p=>p.conceptId));
+  const carts=at=>atlas.parts.filter((p,i)=>p.conceptId==='ceta'&&isLaunched(launches[i],Date.parse(at))).map(p=>p.id);
+  assert.deepEqual(carts('2002-10-07'),['mss-4']);assert.equal(carts('2002-11-23').length,2,'CETA B must wait for its own flight');
   assert.deepEqual([...present(start)],['fgb'],'the timeline starts with Zarya alone');
   assert.equal(atlas.parts.filter((_,i)=>isLaunched(launches[i],null)).length,atlas.parts.length,'complete assembly shows every part');
   const in2011=present(TIMELINE_END);assert.ok(in2011.has('ams')&&!in2011.has('mlm')&&!in2011.has('era'),'2011 holds every element except those launched later');

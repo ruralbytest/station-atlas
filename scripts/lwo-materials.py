@@ -55,7 +55,8 @@ def read_materials(path):
    surfaces[name]=surface
  for surface in surfaces.values():
   surface['layers'].sort(key=lambda x:x.pop('ordinal'))
-  for layer in surface['layers']:layer['image']=clips[layer.pop('clip')]
+  for layer in surface['layers']:layer['image']=clips.get(layer.pop('clip'),'')
+  surface['layers']=[layer for layer in surface['layers'] if layer['image']]
  return surfaces,uvmaps
 
 class TextureExporter:

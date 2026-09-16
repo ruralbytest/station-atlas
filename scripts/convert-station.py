@@ -1,6 +1,6 @@
 """Convert NASA's "ISS complete 2011" Lightwave package into the atlas manifest and chunk layout.
-Usage: python scripts/convert-station.py [WORK_DIR=work/iss] [STATION_MAP=scripts/station.json] [--stats]
-Requires numpy. Source package and credit: public/ATTRIBUTION.md and docs/iss-explorer-plan.md.
+Usage: python scripts/convert-station.py [WORK_DIR=work/iss] [STATION_MAP=scripts/station.json] [OUTPUT=work/restored] [--stats]
+Requires numpy and Pillow. Source package and credit: public/ATTRIBUTION.md and docs/iss-explorer-plan.md.
 Reads every LWO2 object layer the scene loads, bakes each layer's world transform from the scene's
 motion channels and parent chain, converts Lightwave's left-handed frame to three.js, triangulates,
 computes area-weighted normals with hard edges above 60 degrees, and writes atlas.json plus .bin chunks.
@@ -14,7 +14,7 @@ root=Path(__file__).resolve().parents[1]
 args=[a for a in sys.argv[1:] if not a.startswith('--')];flags=set(a for a in sys.argv[1:] if a.startswith('--'))
 work=Path(args[0]) if len(args)>0 else root/'work/iss'
 station=json.loads((Path(args[1]) if len(args)>1 else root/'scripts/station.json').read_text(encoding='utf8'))
-out=root/'public/models';out.mkdir(parents=True,exist_ok=True)
+out=Path(args[2]) if len(args)>2 else root/'work/restored';out.mkdir(parents=True,exist_ok=True)
 textures=appearance.TextureExporter(work,out);materials=[];material_ids={}
 SCENE=work/'Scenes/ISS complete_2011.lws'
 UNIT=0.0254 # Scene units are inches: the P6 to S6 truss spans about 4,290 units, the real 109 m.
@@ -127,8 +127,15 @@ for it in items:
   try:
    files[it['file']]=read_lwo(path)
    files[it['file']]['materials'],files[it['file']]['uvmaps']=appearance.read_materials(path)
-  except Exception as e:files[it['file']]=None;skipped.append(f"{it['file']}: {e}")
+  except Exception as e:raise RuntimeError(f"{it['file']}: {e}") from e
 cache={}
+source_cache={}
+def source_world(it):
+ if it['id'] in source_cache:return source_cache[it['id']]
+ lwo=files.get(it.get('file'));layer=lwo['layers'].get(it['layer']-1) if lwo else None
+ m=local_matrix(it,layer['pivot'] if layer else (0,0,0));parent=by_id.get(it['parent'])
+ if parent is not None:m=source_world(parent)@m
+ source_cache[it['id']]=m;return m
 def world(it):
  if it['id'] in cache:return cache[it['id']]
  if it.get('null')==ROOT:m=np.eye(4)
@@ -186,11 +193,11 @@ for it in items:
     image=tex.pop('image');tex['texture']=textures.export(image)
     if tex['texture'] is None:mat.setdefault('unsupported',[]).append('Missing image: '+image)
    mat['layers']=[tex for tex in mat['layers'] if tex['texture'] is not None]
-   mat['sourceObject']=it['file'];mat['sourceWorld']=world(it).T.ravel().tolist()
+   mat['sourceObject']=it['file'];mat['sourceWorld']=source_world(it).T.ravel().tolist()
    mk=json.dumps(mat,sort_keys=True)
    if mk not in material_ids:material_ids[mk]=len(materials);materials.append(mat)
    draws.append({'start':index_total,'count':len(indices),'material':material_ids[mk]})
-   pp.append(positions);nn.append(normals);ii.append(indices+vertex_total);ss.append(layer['points'][source_indices]);uu.append(uv);vertex_total+=len(positions);index_total+=len(indices)
+   pp.append(positions);nn.append(normals);ii.append(indices+vertex_total);ss.append(layer['points'][source_indices] if mat['layers'] else np.zeros_like(positions));uu.append(uv);vertex_total+=len(positions);index_total+=len(indices)
   if not pp:continue
   positions=np.concatenate(pp);normals=np.concatenate(nn);indices=np.concatenate(ii);source_positions=np.concatenate(ss);uv=np.concatenate(uu)
   surface=lwo['tags'][tag] if 0<=tag<len(lwo['tags']) else ''

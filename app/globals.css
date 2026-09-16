@@ -151,4 +151,8 @@ h1{color:var(--foreground)}h1 .edition{color:#9aa4b0}.eyebrow,.identity-meta{col
 .future-selection{font-size:12px;line-height:1.5;color:var(--muted-foreground)}
 .future-selection p{margin:0 0 8px}.future-selection button{width:100%;margin-bottom:6px}
 .structure-sources{display:flex;flex-direction:column;gap:8px}.structure-sources h3{font-size:12px;font-weight:500;margin:0}.structure-sources .source-link{margin:0;text-transform:capitalize}
+.history-note{font-size:12px;line-height:1.6;color:var(--muted-foreground);padding:12px 0;border-top:1px solid var(--border)}
+.history-note a{display:inline-flex;align-items:center;gap:4px;text-decoration:underline}
+.history-scope{position:absolute;bottom:158px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted-foreground);white-space:nowrap;z-index:20}
+@media(max-width:767px){.history-scope{bottom:calc(238px + env(safe-area-inset-bottom));font-size:10px}}
 @media(max-width:767px){.timeline-control .explode-label output{font-size:11px}.share-feedback{bottom:32px;right:16px}.future-selection{font-size:11px}}

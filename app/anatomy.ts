@@ -12,10 +12,10 @@ export const SYSTEMS: {id:SystemId;name:string;color:string;description:string}[
  {id:'solar',name:'Solar arrays',color:'#141b34',description:'Solar array wings turn sunlight into electricity for every system on board. They rotate to follow the Sun as the station circles Earth.'},
  {id:'thermal',name:'Radiators and thermal',color:'#9fe3e8',description:'Radiators shed the heat produced by equipment and crew into space. Coolant loops carry that heat out from the modules to these panels.'},
 ];
-export interface Part {id:string;name:string;conceptId:string;system:SystemId;chunk:number;positions:number;normals:number;indices:number;vertexCount:number;indexCount:number;bounds:[number[],number[]]}
+export interface Part {id:string;name:string;conceptId:string;system:SystemId;chunk:number;positions:number;normals:number;indices:number;sourcePositions?:number;uvs?:number;launchDate?:string;draws?:{start:number;count:number;material:number}[];vertexCount:number;indexCount:number;bounds:[number[],number[]]}
 export interface Launch {date:string;flight:string;vehicle:string;complete?:string}
 export interface Concept {id:string;name:string;elements:string[];launch?:Launch}
-export interface Atlas {version:string;sex?:'male';source?:string;scope?:string;parts:Part[];concepts:Concept[];chunks:{url:string;bytes:number;gzip?:string;gzipBytes?:number}[];triangles:number;bounds?:[number[],number[]]}
+export interface Atlas {version:string;sex?:'male';source?:string;scope?:string;materials?:import('./source-material').SourceMaterial[];parts:Part[];concepts:Concept[];chunks:{url:string;bytes:number;gzip?:string;gzipBytes?:number}[];triangles:number;bounds?:[number[],number[]]}
 export type View = 'three-quarter'|'front'|'back'|'side';
 export interface SceneState {inspectorOpen?:boolean;explode:number;visible:SystemId[];selected:string[];isolate:boolean;view:View;rotate:boolean;reset:number;assembly:number|null}
 export const DEFAULT_VISIBLE:SystemId[] = ['truss','us-modules','partner-modules','russian-modules','docking','robotics','platforms','vehicles','solar','thermal'];

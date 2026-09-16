@@ -7,7 +7,7 @@ import json,re
 from datetime import datetime
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
-sequence=json.loads((root/'docs/assembly-sequence.json').read_text(encoding='utf8'))['launches']
+source=json.loads((root/'docs/assembly-sequence.json').read_text(encoding='utf8'));sequence=source['launches']
 facts=json.loads((root/'docs/station-facts.json').read_text(encoding='utf8'))['facts']
 path=root/'public/models/atlas.json';raw=path.read_text(encoding='utf8');atlas=json.loads(raw)
 host=lambda url:re.match(r'https://([^/#]+)',url).group(1)
@@ -34,6 +34,11 @@ for c in atlas['concepts']:
   launch={'date':sequence[members[0]]['date'],'flight':flights[0] if len(flights)==1 else f'{flights[0]} to {flights[-1]} ({len(flights)} flights)','vehicle':vehicles[0] if len(vehicles)==1 else f'{len(vehicles)} launches'}
   if sequence[members[-1]]['date']!=launch['date']:launch['complete']=sequence[members[-1]]['date']
  c.pop('launch',None);c['launch']=launch
+for pid,entry in source.get('partLaunches',{}).items():
+ part=next(p for p in atlas['parts'] if p['id']==pid)
+ assert re.fullmatch(r'\d{4}-\d{2}-\d{2}',entry['date'])
+ assert all(host(url)=='nasa.gov' or host(url).endswith('.nasa.gov') for url in entry['sources'])
+ part['launchDate']=entry['date']
 compact=not raw.lstrip().startswith('{\n')
 path.write_text(json.dumps(atlas,separators=(',',':')) if compact else json.dumps(atlas,indent=1),encoding='utf8')
 print(f"{len(atlas['concepts'])} concepts dated ({len(elements)} elements, {len(atlas['concepts'])-len(elements)} groups) across {len(by_flight)} flights, {min(sequence[c]['date'] for c in elements)} to {max(sequence[c]['date'] for c in elements)}")

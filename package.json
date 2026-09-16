@@ -10,7 +10,7 @@
     "build": "vite build",
     "build:vercel": "vite build",
     "check": "tsc --noEmit",
-    "test": "node scripts/validate-atlas.mjs && node scripts/validate-interactions.mjs && node scripts/validate-view-state.mjs",
+    "test": "node scripts/validate-atlas.mjs && node scripts/validate-materials.mjs && node scripts/validate-interactions.mjs && node scripts/validate-view-state.mjs",
     "test:browser": "npm run build && node scripts/test-browser.mjs"
   },
   "dependencies": {

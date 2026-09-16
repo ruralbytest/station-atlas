@@ -6,11 +6,12 @@ import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {createExplosionLayout} from './explosion-layout';
 import {decodeModelResponse} from './model-download';
 import {PointerTap} from './pointer-tap';
-import {DOCK_DAMPING,DOCK_DISTANCE,isLaunched,partLaunchTimes} from './assembly';
+import {partLaunchTimes} from './assembly';
 import {SYSTEMS,type Atlas,type SceneState} from './anatomy';
 import type {Theme} from './theme';
 import {visibilityFor} from './visibility';
 import {measureFreeBox,observeFreeBox} from './scene-viewport';
+import {sourceMaterial,textureKey} from './source-material';
 interface Props {atlas:Atlas;state:SceneState;theme:Theme;onSelect:(id:string)=>void;onProgress:(n:number)=>void;onError:(s:string)=>void}
 export default function StationScene({atlas,state,theme,onSelect,onProgress,onError}:Props){
  const currentTheme=useRef(theme);currentTheme.current=theme;
@@ -42,8 +43,8 @@ export default function StationScene({atlas,state,theme,onSelect,onProgress,onEr
   const materials:T.Material[]=[],geometries:T.BufferGeometry[]=[],pickers:(T.Mesh|undefined)[]=[],centers=atlas.parts.map(p=>new T.Vector3().fromArray(p.bounds[0]).add(new T.Vector3().fromArray(p.bounds[1])).multiplyScalar(.5));
   const offsets:T.Vector3[]=[],bounds=atlas.parts.map(p=>new T.Box3(new T.Vector3().fromArray(p.bounds[0]),new T.Vector3().fromArray(p.bounds[1])));
   let packingWidth=1,packingHeight=1;
-  // Assembly hides parts launched after the timeline; parts that launch as it advances dock in along their outward explode direction.
-  const launches=partLaunchTimes(atlas),systemIndex=atlas.parts.map(p=>SYSTEMS.findIndex(sys=>sys.id===p.system)),docking=new Float32Array(atlas.parts.length);let lastAssembly:number|null|undefined;
+  // Launch history is a visibility filter in the source reference layout, not a docking simulation.
+  const launches=partLaunchTimes(atlas),systemIndex=atlas.parts.map(p=>SYSTEMS.findIndex(sys=>sys.id===p.system));
   const markerPositions=new Float32Array(atlas.parts.length*3),markerGeometry=new T.BufferGeometry();markerGeometry.setAttribute('position',new T.BufferAttribute(markerPositions,3));
   const markerMaterial=new T.PointsMaterial({color:0x64748b,size:5,sizeAttenuation:false,transparent:true,opacity:.72,depthTest:false});
   markerMaterial.onBeforeCompile=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif (distance(gl_PointCoord, vec2(0.5)) > 0.5) discard;');};
@@ -56,18 +57,21 @@ export default function StationScene({atlas,state,theme,onSelect,onProgress,onEr
    for(const t of targets){const dx=Math.max(t.left-x,0,x-t.right),dy=Math.max(t.top-y,0,y-t.bottom),distance=Math.hypot(dx,dy);if(distance>radius)continue;const candidate=distance+Math.hypot(t.x-x,t.y-y)*.025;if(candidate<score){score=candidate;best=t.index;}}
    return best;
   };
-  const materialFor=(system:string)=>{
-   const m=new T.MeshStandardMaterial({color:SYSTEMS.find(s=>s.id===system)?.color??'#aebbb8',metalness:.08,roughness:.7,envMapIntensity:.7,side:T.DoubleSide});
+  const materialFor=(system:string,source?:T.MeshStandardMaterial)=>{
+   const m=source??new T.MeshStandardMaterial({color:SYSTEMS.find(s=>s.id===system)?.color??'#aebbb8',metalness:.08,roughness:.7,envMapIntensity:.7,side:T.DoubleSide});
+   const compile=m.onBeforeCompile.bind(m);
    m.onBeforeCompile=shader=>{
+    compile(shader,renderer);
     shader.uniforms.partState={value:partTexture};shader.uniforms.selectionState={value:selectionTexture};shader.uniforms.stateWidth={value:width};
     shader.vertexShader='attribute float partIndex; uniform sampler2D partState; uniform sampler2D selectionState; uniform float stateWidth; varying float partVisible; varying float partSelected;\n'+shader.vertexShader;
     shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvec2 stateUv = vec2((partIndex + 0.5) / stateWidth, 0.5); vec4 state = texture2D(partState, stateUv); transformed += state.xyz; partVisible = state.w; partSelected = texture2D(selectionState, stateUv).r;');
     shader.fragmentShader='varying float partVisible; varying float partSelected;\n'+shader.fragmentShader;
     shader.fragmentShader=shader.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif (partVisible < 0.5) discard;');
-    shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.42, 0.85, 0.78), partSelected * 0.75);');
+    shader.fragmentShader=shader.fragmentShader.replace('#include <alphatest_fragment>','#include <alphatest_fragment>\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.42, 0.85, 0.78), partSelected * 0.55);');
    };materials.push(m);return m;
   };
   const mats=new Map(SYSTEMS.map(s=>[s.id,materialFor(s.id)]));
+  const textures=new Map<string,T.Texture>(),sourceMats:T.Material[]=[],sourceMaterialIds:number[]=[];
   let loaded=0;
   const loadChunk=async(ci:number)=>{
    const chunk=atlas.chunks[ci],compressed=!!chunk.gzip&&typeof DecompressionStream!=='undefined';const response=await fetch(compressed?chunk.gzip!:chunk.url,{signal:abort.signal});const buffer=await decodeModelResponse(response,chunk.bytes,compressed);if(disposed)return;
@@ -77,14 +81,32 @@ export default function StationScene({atlas,state,theme,onSelect,onProgress,onEr
     const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(new Float32Array(buffer,p.positions,p.vertexCount*3),3));
     // GPU normalized signed-short normals keep the complete atlas compact in memory.
     g.setAttribute('normal',new T.BufferAttribute(new Int16Array(buffer,p.normals,p.vertexCount*3),3,true));g.setIndex(new T.BufferAttribute(new Uint32Array(buffer,p.indices,p.indexCount),1));
+    if(p.sourcePositions!==undefined)g.setAttribute('sourcePosition',new T.BufferAttribute(new Float32Array(buffer,p.sourcePositions,p.vertexCount*3),3));
+    if(p.uvs!==undefined)g.setAttribute('sourceUv',new T.BufferAttribute(new Float32Array(buffer,p.uvs,p.vertexCount*2),2));
     g.boundingBox=bounds[i].clone();g.computeBoundingSphere();const pick=new T.Mesh(g);pick.matrixAutoUpdate=false;pickers[i]=pick;geometries.push(g);
     g.setAttribute('partIndex',new T.BufferAttribute(new Float32Array(p.vertexCount).fill(i),1));
-    const list=groups.get(p.system)??[];list.push(g);groups.set(p.system,list);
+    if(p.draws?.length&&sourceMats.length){
+     for(const draw of p.draws){
+      // Compact each surface range before batching, while retaining the original part index for picking.
+      const surface=new T.BufferGeometry(),remap=new Map<number,number>(),old:number[]=[],index=new Uint32Array(draw.count);
+      for(let j=0;j<draw.count;j++){const vi=g.index!.getX(draw.start+j);if(!remap.has(vi)){remap.set(vi,old.length);old.push(vi);}index[j]=remap.get(vi)!;}
+      for(const [name,attr] of Object.entries(g.attributes)){const values=new (attr.array.constructor as typeof Float32Array)(old.length*attr.itemSize);old.forEach((vi,j)=>{for(let a=0;a<attr.itemSize;a++)values[j*attr.itemSize+a]=attr.array[vi*attr.itemSize+a];});surface.setAttribute(name,new T.BufferAttribute(values,attr.itemSize,attr.normalized));}
+      surface.setIndex(new T.BufferAttribute(index,1));geometries.push(surface);const key=`source:${sourceMaterialIds[draw.material]}`,list=groups.get(key)??[];list.push(surface);groups.set(key,list);
+     }
+    }else{const list=groups.get(p.system)??[];list.push(g);groups.set(p.system,list);}
    });
-   groups.forEach((gs,system)=>{const geometry=mergeGeometries(gs,false);if(!geometry)throw new Error('Could not assemble station geometry.');geometries.push(geometry);const mesh=new T.Mesh(geometry,mats.get(system as never));mesh.frustumCulled=false;scene.add(mesh);});
+   groups.forEach((gs,system)=>{const geometry=mergeGeometries(gs,false);if(!geometry)throw new Error('Could not assemble station geometry.');geometries.push(geometry);const mesh=new T.Mesh(geometry,system.startsWith('source:')?sourceMats[Number(system.slice(7))]:mats.get(system as never));mesh.frustumCulled=false;scene.add(mesh);});
    lastState=null;loaded++;onProgress(Math.round(loaded/atlas.chunks.length*100));dirty=true;
   };
-  (async()=>{try{let cursor=0;await Promise.all(Array.from({length:3},async()=>{while(cursor<atlas.chunks.length){const i=cursor++;await loadChunk(i);}}));if(!disposed){ready=true;dirty=true;}}catch(e){if(!disposed)onError(e instanceof Error?e.message:'Could not load the station model.');}})();
+  (async()=>{try{
+   const layers=new Map(atlas.materials?.flatMap(m=>m.layers.map(layer=>[textureKey(layer),layer] as const))??[]);
+   const wrap=(n:number)=>n===1?T.RepeatWrapping:n===2?T.MirroredRepeatWrapping:T.ClampToEdgeWrapping;
+   await Promise.all([...layers].map(async([key,layer])=>{const texture=await new T.TextureLoader().loadAsync(layer.texture.url);if(disposed){texture.dispose();return;}texture.colorSpace=T.SRGBColorSpace;texture.wrapS=wrap(layer.wrap[0]);texture.wrapT=wrap(layer.wrap[1]);texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());textures.set(key,texture);}));
+   if(disposed)return;
+   const equivalent=new Map<string,number>();
+   for(const source of atlas.materials??[]){const key=JSON.stringify({color:source.color,diffuse:source.diffuse,specular:source.specular,glossiness:source.glossiness,reflection:source.reflection,transparency:source.transparency,luminosity:source.luminosity,layers:source.layers,world:source.layers.some(l=>l.world)?source.sourceWorld:undefined});let index=equivalent.get(key);if(index===undefined){index=sourceMats.length;equivalent.set(key,index);sourceMats.push(materialFor('',sourceMaterial(source,textures)));}sourceMaterialIds.push(index);}
+   let cursor=0;await Promise.all(Array.from({length:3},async()=>{while(cursor<atlas.chunks.length){const i=cursor++;await loadChunk(i);}}));if(!disposed){ready=true;dirty=true;}
+  }catch(e){if(!disposed)onError(e instanceof Error?e.message:'Could not load the station model or its source textures.');}})();
   // Screen rectangle left free by the panels, dock, caption, and camera rail; the exploded inventory is framed into it.
   let availableBox=measureFreeBox(el);const freeBox=()=>availableBox;
   const fit=(view:string,extent=0)=>{
@@ -121,9 +143,7 @@ export default function StationScene({atlas,state,theme,onSelect,onProgress,onEr
    const changed=lastState?.visible!==s.visible||lastState?.selected!==s.selected||lastState?.isolate!==s.isolate||lastState?.assembly!==s.assembly;
    const moving=Math.abs(amount-s.explode)>.0001;
    if(moving){amount=T.MathUtils.damp(amount,s.explode,8,dt);dirty=true;}
-   if(s.assembly!==lastAssembly){for(let i=0;i<docking.length;i++)docking[i]=!isLaunched(launches[i],s.assembly)?0:lastAssembly!==undefined&&!isLaunched(launches[i],lastAssembly)?1:docking[i];lastAssembly=s.assembly;}
-   let docked=false;for(let i=0;i<docking.length;i++)if(docking[i]>0){docking[i]=docking[i]<.002?0:T.MathUtils.damp(docking[i],0,DOCK_DAMPING,dt);docked=true;}
-   if(changed||moving||docked||lastExtent<0){
+   if(changed||moving||lastExtent<0){
     const visible=new Set(s.visible),selection=new Set(s.selected),isVisible=visibilityFor(s);
     const visibleParts=atlas.parts.filter(p=>s.isolate?selection.has(p.id):visible.has(p.system)||selection.has(p.id));
     const nextLayoutKey=visibleParts.map(p=>p.id).join(',')+':'+camera.aspect.toFixed(3);
@@ -136,7 +156,6 @@ export default function StationScene({atlas,state,theme,onSelect,onProgress,onEr
      const group=systemIndex[i],spread=stationSize.y*.3,startDx=(c.x-stationCenter.x)*.5,startDy=(group/Math.max(1,SYSTEMS.length-1)-.5)*spread;
      if(amount<=.45){const t=amount/.45;dx=startDx*t;dy=startDy*t;dz=0;}
      else {const t=(amount-.45)/.55;dx=T.MathUtils.lerp(startDx,destination.x-c.x,t);dy=T.MathUtils.lerp(startDy,destination.y-c.y,t);dz=T.MathUtils.lerp(0,destination.z-c.z,t);}
-     if(docking[i]>0){const k=docking[i]*DOCK_DISTANCE/Math.hypot(startDx,startDy);dx+=startDx*k;dy+=startDy*k;}
      const selected=selection.has(p.id);data.set([dx,dy,dz,isVisible(p,launches[i])?1:0],i*4);selectedData[i*4]=selected?255:0;
      markerPositions.set(data[i*4+3]>.5?[c.x+dx,c.y+dy,c.z+dz]:[10000,10000,10000],i*3);const mesh=pickers[i];if(mesh){mesh.position.set(dx,dy,dz);mesh.updateMatrix();mesh.updateMatrixWorld(true);}
     });partTexture.needsUpdate=true;selectionTexture.needsUpdate=true;markerGeometry.attributes.position.needsUpdate=true;lastState=s;lastExtent=amount;dirty=true;
@@ -155,7 +174,7 @@ export default function StationScene({atlas,state,theme,onSelect,onProgress,onEr
 
   };animate();
   const contextLost=(e:Event)=>{e.preventDefault();onError('The 3D session was paused by your device. Reload to continue.');};renderer.domElement.addEventListener('webglcontextlost',contextLost);
-  return()=>{disposed=true;abort.abort();cancelAnimationFrame(frame);observer.disconnect();stopObservingPanels();controls.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.traverse(o=>{if(o instanceof T.Mesh&&!geometries.includes(o.geometry)){o.geometry.dispose();const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});env.dispose();partTexture.dispose();selectionTexture.dispose();markerGeometry.dispose();markerMaterial.dispose();hover.remove();renderer.dispose();renderer.domElement.remove();};
+  return()=>{disposed=true;abort.abort();cancelAnimationFrame(frame);observer.disconnect();stopObservingPanels();controls.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());scene.traverse(o=>{if(o instanceof T.Mesh&&!geometries.includes(o.geometry)){o.geometry.dispose();const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});env.dispose();partTexture.dispose();selectionTexture.dispose();markerGeometry.dispose();markerMaterial.dispose();hover.remove();renderer.dispose();renderer.domElement.remove();};
  },[atlas]);
  return <div className="scene" ref={host}/>;
 }

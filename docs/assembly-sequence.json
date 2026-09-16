@@ -47,9 +47,13 @@
   "mlm": {"date": "2021-07-21", "flight": ["3R", "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf#page=111"], "vehicle": "Proton-M"},
   "era": {"date": "2021-07-21", "flight": ["3R", "https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf#page=111"], "vehicle": "Proton-M"}
  },
+ "partLaunches": {
+  "mss-3": {"date":"2002-11-23","sourceLayer":"mss.lwo layer 3: ceta B port","sources":["https://www.nasa.gov/mission/sts-113/","https://www3.nasa.gov/centers/kennedy/pdf/533580main_sswallchart04-11.pdf"]},
+  "mss-4": {"date":"2002-10-07","sourceLayer":"mss.lwo layer 4: ceta A stbd","sources":["https://www.nasa.gov/mission/sts-112/"]}
+ },
  "gaps": [
   "The model shows every element at its 2011 position. P6 flew on 4A in 2000 and sat atop Z1 until 10A relocated it in 2007, and PMA-2 and PMA-3 were also moved; the timeline shows each at its final place from launch.",
-  "ceta: the two CETA carts flew on 9A (STS-112) and 11A (STS-113), but the model does not say which mesh is which cart, so both carry the 9A date.",
+  "ceta: source LAYR names identify layer 3 as ceta B port and layer 4 as ceta A stbd. Per-part launch dates now distinguish STS-113 from STS-112; the grouped concept still starts on the first launch.",
   "obss: the reference guide's ULF6 entry names AMS and ELC-3; the boom was left on the station by the same flight (STS-134), per its cited mission page.",
   "esp1: the reference guide prints STS-98 beside 5A.1; the cited mission page gives STS-102, which is used here.",
   "mlm and era: the guide lists 3R without a date because it had not flown. Both launched in 2021, after the model's 2011 configuration, so the assembly timeline adds them only when it reaches complete."

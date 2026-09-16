@@ -1,13 +1,14 @@
 # Station Atlas
 
-An interactive 3D model of the International Space Station built with React, Three.js, and shadcn/ui. Take NASA's "ISS complete 2011" reference apart into **382 individually selectable pieces**, explore **10 station systems**, and search **55 named modules and assemblies**. Replay its assembly launch by launch, from Zarya in 1998 to the complete station. Forked from Human Atlas, the same viewer built for anatomy.
+An interactive 3D model of the International Space Station built with React, Three.js, and shadcn/ui. Take NASA's "ISS complete 2011" reference apart into **382 individually selectable pieces**, explore **10 station systems**, and search **55 named modules and assemblies**. Explore launch history from Zarya in 1998 in the projected reference layout. Forked from Human Atlas, the same viewer built for anatomy.
 
 ## Explore
 
 - Orbit, zoom, and select structures directly on the station.
 - Toggle individual systems or use "Modules only" and "Truss and power" presets.
 - Move from the assembled station to a spaced inventory of every visible piece.
-- Play or scrub the assembly timeline: each element docks on its launch date, one year every two seconds.
+- Play or scrub launch history, one year every two seconds. Dates filter elements in the reference layout; historical relocations and docking trajectories are not reconstructed.
+- View original surface colors and available NASA textures with full source geometry.
 - Search module names and source identifiers.
 - Isolate a selected structure and read its sourced launch facts.
 - Use compact controls and detail panels on mobile.
@@ -59,7 +60,7 @@ View state is stored in the URL fragment, so links work on a static host. Light/
 
 The Three.js viewer loads as a separate JavaScript chunk. Tailwind scans the application and the used UI components listed in `app/globals.css`; update that source list when adding another UI component. The scene measures visible controls and panels via `app/scene-viewport.ts`, with resize and DOM observers keeping camera framing in step with the CSS layout.
 
-Measured production sizes after the interaction review:
+Earlier production sizes before source-detail restoration (historical baseline):
 
 | Asset | Before | After |
 | --- | ---: | ---: |
@@ -68,11 +69,21 @@ Measured production sizes after the interaction review:
 | CSS | 202 kB | 80 kB |
 | Compressed geometry | 6.17 MB | 6.17 MB |
 
-Deferring the viewer lets the interface load first; it does not reduce the total JavaScript or geometry needed to display the station. The simulated mobile profile described above reached ready in approximately 6.8 seconds in a local run; hardware, network and browser differences will affect that number.
+Deferring the viewer lets the interface load first; it does not reduce the total JavaScript or geometry needed to display the station. Before source-detail restoration, the simulated mobile profile described above reached ready in approximately 6.8 seconds in a local run; hardware, network and browser differences will affect that number.
 
 ## Rebuilding geometry
 
-The repository includes browser-ready geometry. Rebuilding it is optional: download and extract the NASA "ISS complete 2011" package into `work/iss/` (see `docs/iss-explorer-plan.md` for the source URL and format notes), then run `python scripts/convert-station.py`, `node scripts/optimize-anatomy.mjs`, and `node scripts/compress-models.mjs`, then `python scripts/build-launches.py` to date each concept. Simplification uses a 0.2% relative error limit per part.
+The repository includes browser-ready geometry. To rebuild, extract NASA’s source into `work/iss/` and install Python’s numpy and Pillow packages. Stage the conversion before publishing:
+
+```sh
+python scripts/convert-station.py work/iss scripts/station.json work/restored
+node scripts/publish-model.mjs work/restored
+python scripts/build-launches.py
+npm test
+```
+
+The publisher creates content-addressed binary/gzip files, preserves existing launch metadata, publishes the manifest last, and removes only superseded generated chunks. Do not run the legacy lossy optimizer on source-material geometry. The full model downloads about **10.11 MB of compressed geometry**, plus four PNG textures (about 0.94 MB). The source-detail version reached ready in about **14 seconds** in the same simulated mobile profile. See [source appearance and limitations](docs/source-appearance.md).
+
 
 ## Assembly clip
 

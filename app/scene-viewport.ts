@@ -1,5 +1,5 @@
 export interface FreeBox {l:number;r:number;t:number;b:number}
-const selectors=['.identity','.top-actions','.view-controls','.layers-panel','.bottom-dock','.scene-caption','.detail-sheet'];
+const selectors=['.identity','.top-actions','.view-controls','.layers-panel','.bottom-dock','.scene-caption','.history-scope','.detail-sheet'];
 /** Read actual panel bounds so CSS remains the source of layout dimensions. */
 export function measureFreeBox(host:HTMLElement):FreeBox{
  const root=host.getBoundingClientRect(),w=root.width,h=root.height,pad=16;
@@ -10,7 +10,7 @@ export function measureFreeBox(host:HTMLElement):FreeBox{
   if(style.display==='none'||style.visibility==='hidden'||!rect.width||!rect.height)continue;
   const left=rect.left-root.left,right=rect.right-root.left,top=rect.top-root.top,bottom=rect.bottom-root.top;
   if(selector==='.identity'||selector==='.top-actions')box.t=Math.max(box.t,bottom+pad);
-  else if(selector==='.bottom-dock'||selector==='.scene-caption')box.b=Math.min(box.b,top-pad);
+  else if(selector==='.bottom-dock'||selector==='.scene-caption'||selector==='.history-scope')box.b=Math.min(box.b,top-pad);
   else if(selector==='.view-controls'){if(rect.width>rect.height)box.t=Math.max(box.t,bottom+pad);else box.r=Math.min(box.r,left-pad);}
   else if(selector==='.layers-panel'){if(!element.classList.contains('mobile-open'))box.l=Math.max(box.l,right+pad);}
   else if(selector==='.detail-sheet'){if(rect.width>w*.6)box.b=Math.min(box.b,top-pad);else box.r=Math.min(box.r,left-pad);}

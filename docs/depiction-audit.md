@@ -1,5 +1,7 @@
 # Depiction accuracy audit
 
+**Follow-up, 2026-09-16:** This report describes the earlier simplified build. The current build retains every source-converted triangle, restores source surface settings and the available color textures, and explicitly labels the timeline as launch history in reference positions. Missing archive images, legacy shading effects and historical placement reconstruction remain limitations. See [restoration results](source-appearance.md).
+
 Checked 2026-09-15 against the locally extracted NASA Johnson Space Center **ISS complete 2011** Lightwave package, its README and its two reference renders. The [NASA catalogue](https://science.nasa.gov/3d-resources/international-space-station-iss-c-high-res/) identifies this as a February 2011 model with component configurations preserved in the original Lightwave format.
 
 ## Conclusion

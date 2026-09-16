@@ -1,16 +1,16 @@
 import {test,expect,type Page} from '@playwright/test';
-import {readFileSync} from 'node:fs';
+import {readFileSync,mkdirSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {PNG} from 'pngjs';
 const atlas=JSON.parse(readFileSync('public/models/atlas.json','utf8'));
-const countAt=(date:string)=>atlas.parts.filter((p:{conceptId:string})=>atlas.concepts.find((c:{id:string})=>c.id===p.conceptId).launch.date<=date).length;
-async function ready(page:Page,path='/'){await page.goto(path);await expect(page.locator('.loading')).toHaveCount(0);await expect(page.locator('canvas')).toBeVisible();}
+const countAt=(date:string)=>atlas.parts.filter((p:{conceptId:string;launchDate?:string})=>(p.launchDate??atlas.concepts.find((c:{id:string})=>c.id===p.conceptId).launch.date)<=date).length;
+async function ready(page:Page,path='/',timeout=15000){await page.goto(path);await expect(page.locator('.loading')).toHaveCount(0,{timeout});await expect(page.locator('canvas')).toBeVisible();}
 async function choose(page:Page,name:string){await page.getByRole('button',{name:'Search the station',exact:true}).click();await page.getByRole('combobox').fill(name);await page.getByRole('option').filter({hasText:name}).first().click();await expect(page.locator('.detail-sheet')).toBeVisible();}
 const canvasHash=async(page:Page)=>createHash('sha256').update(await page.locator('canvas').screenshot()).digest('hex');
 function changedPixels(before:Buffer,after:Buffer){const a=PNG.sync.read(before),b=PNG.sync.read(after);if(a.width!==b.width||a.height!==b.height)return 1;let changed=0;for(let i=0;i<a.data.length;i+=4)if([0,1,2,3].some(channel=>Math.abs(a.data[i+channel]-b.data[i+channel])>20))changed++;return changed/(a.width*a.height);}
 
 test('count, future selections and the separate complete endpoint',async({page})=>{
- await ready(page);const slider=page.getByRole('slider',{name:'Assembly',exact:true});
+ await ready(page);const slider=page.getByRole('slider',{name:'Launch history',exact:true});
  await slider.press('Home');await expect(page.locator('.panel-foot')).toContainText(`${countAt('1998-11-20')} pieces visible`);
  await choose(page,'Destiny');await expect(page.getByText('Some selected pieces are hidden')).toBeVisible();
  await page.getByRole('button',{name:'Jump to launch',exact:true}).click();
@@ -81,10 +81,38 @@ test('phone controls, themes and exploded view remain usable',async({browser},te
 test('record loading under a simulated mobile connection',async({browser},testInfo)=>{
  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true}),page=await context.newPage(),cdp=await context.newCDPSession(page);
  await cdp.send('Network.enable');await cdp.send('Network.emulateNetworkConditions',{offline:false,latency:80,downloadThroughput:10e6/8,uploadThroughput:2e6/8});await cdp.send('Emulation.setCPUThrottlingRate',{rate:4});
- await ready(page,'http://127.0.0.1:3017/');
+ await ready(page,'http://127.0.0.1:3017/',45000);
  const metrics=await page.evaluate(()=>{const entries=performance.getEntriesByType('resource') as PerformanceResourceTiming[];return{readyMs:Math.round(performance.now()),geometryBytes:entries.filter(e=>/\.bin(\.gz)?$/.test(e.name)).reduce((n,e)=>n+e.encodedBodySize,0),javascriptBytes:entries.filter(e=>/\.js$/.test(e.name)).reduce((n,e)=>n+e.encodedBodySize,0),cssBytes:entries.filter(e=>/\.css$/.test(e.name)).reduce((n,e)=>n+e.encodedBodySize,0)};});
  console.log('Simulated mobile load (10 Mbps, 80 ms latency, 4× CPU slowdown; local software GPU):',metrics);
  await testInfo.attach('mobile-load-metrics',{body:JSON.stringify(metrics,null,2),contentType:'application/json'});await context.close();
+});
+
+test('source materials render without shader errors and historical scope stays explicit',async({page})=>{
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+ const requests=new Set<string>();page.on('request',r=>{if(r.url().includes('/models/textures/'))requests.add(r.url());});
+ await ready(page);expect(requests.size).toBe(4);await expect(page.locator('.identity-meta')).toContainText('projected 2011');
+ mkdirSync('outputs',{recursive:true});await page.screenshot({path:'outputs/source-materials-light.png'});
+ await page.getByRole('button',{name:'Switch to dark mode',exact:true}).click();await page.waitForTimeout(400);await page.screenshot({path:'outputs/source-materials-dark.png'});
+ await choose(page,'P6 truss');await expect(page.locator('.history-note')).toContainText('December 3, 2000');
+ await page.getByRole('button',{name:'Clear selection',exact:true}).click();
+ await page.getByRole('slider',{name:'Launch history',exact:true}).press('Home');await expect(page.getByText('Launch dates · reference positions')).toBeVisible();
+ await page.getByRole('button',{name:'About this model',exact:true}).click();await expect(page.locator('.about-copy')).toContainText('not reconstructed');await expect(page.locator('.about-copy')).toContainText('missing from the archive');
+ expect(errors).toEqual([]);
+});
+
+test('missing texture download has a recoverable error',async({page})=>{
+ await page.route('**/models/textures/*.png',route=>route.fulfill({status:503,body:'Unavailable'}));await page.goto('/');
+ await expect(page.getByRole('alert')).toContainText('source textures');await page.unroute('**/models/textures/*.png');
+ await page.getByRole('button',{name:'Reload viewer',exact:true}).click();await expect(page.locator('.loading')).toHaveCount(0);
+});
+
+test('CETA carts use their separate launch dates in the counter and selection action',async({page})=>{
+ await ready(page,'/#date=2002-10-07&element=ceta');
+ await expect(page.locator('.panel-foot')).toContainText(`${countAt('2002-10-07')} pieces visible`);
+ await expect(page.locator('.future-selection')).toContainText('2002-11-23');
+ await page.getByRole('button',{name:'Jump to launch',exact:true}).click();
+ await expect(page.locator('.future-selection')).toHaveCount(0);
+ await expect(page.locator('.panel-foot')).toContainText(`${countAt('2002-11-23')} pieces visible`);
 });
 
 test('future launch action fits on a small phone',async({page})=>{

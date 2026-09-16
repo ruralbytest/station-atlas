@@ -4,9 +4,9 @@ International Space Station model: "ISS complete 2011", NASA Johnson Space Cente
 
 - Download: https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/3D%20Models/International%20Space%20Station%20(ISS)%20(C)%20(High%20Res)/International%20Space%20Station%20(ISS)%20(C)%20(High%20Res).7z
 - Catalog page: https://science.nasa.gov/3d-resources/international-space-station-iss-c-high-res/
-- Source scene: `Scenes/ISS complete_2011.lws` and the 47 Lightwave objects it loads (73 object layers).
+- Source scene: `Scenes/ISS complete_2011.lws` and the 48 Lightwave objects it loads (73 object layers).
 
-Adaptations (`scripts/convert-station.py`): each scene layer's world transform baked from the Lightwave motion channels and parent chain; the left-handed inch-based frame converted to right-handed meters with the truss on X, zenith on Y, and forward on Z; polygons triangulated; area-weighted normals with hard edges above 60 degrees; single-layer objects split into parts by surface name; geometry simplified with meshoptimizer at a 0.2% per-part error bound; normals quantized to signed 16-bit and packed into binary chunks. The 2011 scene predates Prichal, the Bishop airlock, the roll-out solar arrays (iROSA), Axiom modules, and Nauka's final position, and loads no visiting vehicles. Surface image maps from the package (`scripts/lwo-materials.py`) are converted to PNG in `public/models/textures/` and are NASA public domain like the geometry.
+Adaptations (`scripts/convert-station.py`): each scene layer's world transform baked from the Lightwave motion channels and parent chain; the left-handed inch-based frame converted to right-handed meters with the truss on X, zenith on Y, and forward on Z; polygons triangulated; area-weighted normals with hard edges above 60 degrees; single-layer objects split into parts by surface name; all 866,256 source-converted triangles retained without lossy simplification; normals quantized to signed 16-bit and packed into binary chunks. The 2011 scene predates Prichal, the Bishop airlock, the roll-out solar arrays (iROSA), Axiom modules, and Nauka's final position, and loads no visiting vehicles. Surface image maps from the package (`scripts/lwo-materials.py`) are converted to PNG in `public/models/textures/` and are NASA public domain like the geometry.
 
 ## Module descriptions
 
@@ -14,7 +14,7 @@ The launch date, launch vehicle, agency, mass, and purpose shown for each module
 
 ## Assembly timeline
 
-Each element's launch date, ISS assembly flight designation, and vehicle (`docs/assembly-sequence.json`, written into the manifest by `scripts/build-launches.py`) come from the "Principal Stages in Construction" table of NASA's Reference Guide to the International Space Station, November 2010 (https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf, printed pages 100 to 109), which replaces the assembly sequence page linked from the model archive and no longer online, together with the launch pages cited in `docs/station-facts.json`. The timeline shows each element at its 2011 position from launch; the file lists where that differs from history.
+Each element's launch date, ISS assembly flight designation, and vehicle (`docs/assembly-sequence.json`, written into the manifest by `scripts/build-launches.py`) come from the "Principal Stages in Construction" table of NASA's Reference Guide to the International Space Station, November 2010 (https://www.nasa.gov/wp-content/uploads/2022/06/508318main_iss_ref_guide_nov2010.pdf, printed pages 100 to 109), which replaces the assembly sequence page linked from the model archive and no longer online, together with the launch pages cited in `docs/station-facts.json`. The control is explicitly labeled Launch history: it filters the projected reference layout by launch date, not installation date. It does not reconstruct temporary locations, deployment states or docking trajectories. The interface includes historical notes for P6, Harmony, PMA-2, Nauka and ERA. The Complete endpoint opens the original projected model; it is not a 2021/current station snapshot.
 
 ## Fork history
 
