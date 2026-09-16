@@ -21,14 +21,14 @@ node scripts/missing-launches.mjs        # lists concepts without a launch date;
 node scripts/record-clip.mjs             # with the dev server running: vertical assembly clip to outputs/ (needs Playwright + ffmpeg)
 ```
 
-There is no test runner; the two `validate-*.mjs` scripts are the test suite and use `node:assert`. Run `npm run check` plus both scripts before considering a change done. `oxlint`/`oxfmt` are installed but have no config and no npm script.
+Pure validation uses `node:assert` via `npm test`. Browser regressions use Playwright against a production build via `npm run test:browser` (install Chromium with `npx playwright install chromium`). Run `npm run check`, `npm test`, and the relevant browser tests before considering a change done. `oxlint`/`oxfmt` are installed but have no config and no npm script.
 
 Deploy is Vercel via `vercel.json` (Vite framework, `npm ci`, `npm run build`, `dist`). Any static host works.
 
 ## Layout quirks
 
 - Vite `root` is `web/` (entry `web/index.html` -> `web/main.tsx`), but almost all code lives in `app/`. `publicDir` is the repo-level `public/`, and `@/` aliases the repo root (so `@/components/ui/...`).
-- `app/` is NOT a Next.js app directory despite the name; `main.tsx` mounts `app/page.tsx` with `createRoot`. tsconfig still lists Next-style includes and `vinext` types; ignore them.
+- `app/` is NOT a Next.js app directory despite the name; `main.tsx` mounts `app/page.tsx` with `createRoot`. tsconfig uses Vite and Node types; unused Next/Cloudflare build dependencies have been removed.
 - Source files in `app/` and `scripts/` are written in a dense, minimal-whitespace style (one-space indent, long lines). Match it when editing rather than reformatting.
 - `components/ui/` is stock shadcn (Base UI flavour). Only a handful are used (`button`, `badge`, `slider`, `switch`, `sheet`, `combobox`).
 
@@ -44,7 +44,7 @@ Deploy is Vercel via `vercel.json` (Vite framework, `npm ci`, `npm run build`, `
 - Explode is a two-phase animation: below 0.45 parts slide outward along the truss (X) axis in proportion to their distance from center, with a small vertical spread by system; above it they lerp into a packed 2D grid from `createExplosionLayout` (`app/explosion-layout.ts`), which lays out only visible parts and is recomputed when the visible set or aspect changes. Above 0.75 dot markers appear and 2D screen-space `targets` enable hover tooltips and tolerant tapping; above 0.8 orbit becomes pan.
 - Assembly reuses the visibility texture: a part is hidden while its concept's launch is after `state.assembly`, with no extra geometry. Parts that become launched as the timeline moves forward dock in from 3 m along their phase-one explode direction through a per-part `docking` factor damped like the explode. The explosion layout ignores assembly.
 - Rendering is dirty-flagged: the RAF loop only calls `renderer.render` when controls moved or state changed.
-- Camera near/far and orbit min/max distance, plus the default framing in `fit()`, are derived from the manifest's `bounds` diagonal and per-view visible extent rather than a fixed human-scale stage. Camera fitting also hardcodes reserved UI space (panel widths, header/sheet heights, 768px mobile breakpoint, landscape <=600px). The exploded inventory is framed into `freeBox()`, the screen rectangle left by the systems panel, camera rail, caption, and dock, with a view offset that scales with the explode; the layout packs to that rectangle's aspect, and phase two pushes each part back by half its depth so the 75 m solar array blankets cannot stretch over the dock. If you change panel sizes in `app/globals.css`, adjust these numbers too. On phones the dock gains a timeline row, so the mobile reserved height and isolate bottom in `scene.tsx` and the caption and sheet offsets at the end of `globals.css` sit about 60 px higher than the desktop-derived ones.
+- Camera near/far and orbit min/max distance, plus the default framing in `fit()`, are derived from the manifest's `bounds` diagonal and per-view visible extent rather than a fixed human-scale stage. Camera fitting measures visible panel and control bounds through `scene-viewport.ts`. The exploded inventory is framed into `freeBox()`, the screen rectangle left by the systems panel, camera rail, caption, and dock, with a view offset that scales with the explode; the layout packs to that rectangle's aspect, and phase two pushes each part back by half its depth so the 75 m solar array blankets cannot stretch over the dock. Panel size and visibility changes are observed so CSS remains the layout source of truth. On phones the dock gains a timeline row, so the mobile reserved height and isolate bottom in `scene.tsx` and the caption and sheet offsets at the end of `globals.css` sit about 60 px higher than the desktop-derived ones.
 - Chunks are fetched 3 at a time; `app/model-download.ts` handles hosts that serve `.gz` either raw or with Content-Encoding.
 
 **Input** (`app/pointer-tap.ts`): `PointerTap` distinguishes a tap from drag/pinch/cancel so orbiting never selects. Thresholds differ for touch vs mouse.
@@ -62,3 +62,11 @@ App code is MIT. The station model is public domain (NASA); keep `public/ATTRIBU
 ## Fork history
 
 This repository is the station fork created by `docs/iss-explorer-plan.md`'s phase commands (`/iss-1-convert` through `/iss-5-textures`), run against the original Human Atlas repository. That plan document is kept here for reference; phases 1-4 are complete.
+
+## View state and themes
+
+- app/visibility.ts is the shared assembly/system/selection rule for the counter and renderer.
+- app/view-url.ts validates and serializes shared state in the URL fragment; camera presets are shared, arbitrary orbit positions are not.
+- app/theme.ts persists light/dark preference. Theme changes update lighting in place without downloading geometry again.
+- The historical timeline includes December 31, 2011; the extra final slider position is the Complete reference model.
+- Tailwind source scanning is explicit in app/globals.css; include newly used UI components there.

@@ -10,6 +10,8 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
 
 # next.js
 /.next/
@@ -22,6 +24,7 @@
 
 # debug
 npm-debug.log*
+/debug.log
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
@@ -41,3 +44,6 @@ next-env.d.ts
 # local browser automation output
 /.playwright-mcp/
 /*.png
+
+# python bytecode cache
+__pycache__/

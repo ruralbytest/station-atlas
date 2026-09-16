@@ -8,11 +8,14 @@ computes area-weighted normals with hard edges above 60 degrees, and writes atla
 import sys,json,re,struct,math
 from pathlib import Path
 import numpy as np
+import importlib.util
+spec=importlib.util.spec_from_file_location('lwo_materials',Path(__file__).with_name('lwo-materials.py'));appearance=importlib.util.module_from_spec(spec);spec.loader.exec_module(appearance)
 root=Path(__file__).resolve().parents[1]
 args=[a for a in sys.argv[1:] if not a.startswith('--')];flags=set(a for a in sys.argv[1:] if a.startswith('--'))
 work=Path(args[0]) if len(args)>0 else root/'work/iss'
 station=json.loads((Path(args[1]) if len(args)>1 else root/'scripts/station.json').read_text(encoding='utf8'))
 out=root/'public/models';out.mkdir(parents=True,exist_ok=True)
+textures=appearance.TextureExporter(work,out);materials=[];material_ids={}
 SCENE=work/'Scenes/ISS complete_2011.lws'
 UNIT=0.0254 # Scene units are inches: the P6 to S6 truss spans about 4,290 units, the real 109 m.
 SMOOTH=math.cos(math.radians(60)) # Adjacent faces meeting at more than 60 degrees keep a hard edge.
@@ -87,9 +90,10 @@ def clean(s):return re.sub(r'\s+',' ',s.replace('_',' ').replace('-',' ')).strip
 
 def build_mesh(points,polys):
  """Triangulate polygons, split vertices at hard edges, and return positions, int16 normals, and indices."""
- tris=[]
- for poly in polys:
-  for j in range(1,len(poly)-1):tris.append((poly[0],poly[j+1] if FLIP else poly[j],poly[j] if FLIP else poly[j+1]))
+ tris=[];polygon_ids=[]
+ for pi,poly in enumerate(polys):
+  for j in range(1,len(poly)-1):
+   tris.append((poly[0],poly[j+1] if FLIP else poly[j],poly[j] if FLIP else poly[j+1]));polygon_ids.append(pi)
  tri=np.array(tris,dtype=np.int64).reshape(-1,3)
  a,b,c=points[tri[:,0]],points[tri[:,1]],points[tri[:,2]]
  face=np.cross(b-a,c-a);area=np.linalg.norm(face,axis=1)
@@ -113,14 +117,16 @@ def build_mesh(points,polys):
  positions=points[tri.ravel()[uniq]]
  normals=np.zeros((len(uniq),3));np.add.at(normals,inverse,np.repeat(face,3,axis=0))
  length=np.linalg.norm(normals,axis=1);length[length==0]=1;normals/=length[:,None]
- return positions.astype(np.float32),np.clip(np.round(normals*32767),-32767,32767).astype(np.int16),inverse.reshape(-1).astype(np.uint32)
+ return positions.astype(np.float32),np.clip(np.round(normals*32767),-32767,32767).astype(np.int16),inverse.reshape(-1).astype(np.uint32),tri.ravel()[uniq],np.array(polygon_ids)[keep]
 
 items=parse_scene(SCENE);by_id={it['id']:it for it in items}
 files={};skipped=[]
 for it in items:
  if 'file' in it and it['file'] not in files:
   path=work/it['file']
-  try:files[it['file']]=read_lwo(path)
+  try:
+   files[it['file']]=read_lwo(path)
+   files[it['file']]['materials'],files[it['file']]['uvmaps']=appearance.read_materials(path)
   except Exception as e:files[it['file']]=None;skipped.append(f"{it['file']}: {e}")
 cache={}
 def world(it):
@@ -154,21 +160,48 @@ for it in items:
  m=world(it);m=np.vstack([FRAME@m[:3,:],[0,0,0,1]]);points=(layer['points'].astype(np.float64)@m[:3,:3].T+m[:3,3]).astype(np.float32)
  split=(key in force_split) or (len(lwo['layers'])==1 and key not in no_split)
  groups={}
- for poly,tag in zip(layer['polys'],layer['surface']):
+ for pi,(poly,tag) in enumerate(zip(layer['polys'],layer['surface'])):
   if len(poly)<3:continue
-  groups.setdefault(tag if split else -1,[]).append(poly)
- for tag,polys in sorted(groups.items(),key=lambda g:-len(g[1])):
-  mesh=build_mesh(points,polys)
-  if mesh is None:continue
+  groups.setdefault(tag if split else -1,[]).append(pi)
+ for tag,poly_ids in sorted(groups.items(),key=lambda g:-len(g[1])):
+  subgroups={}
+  for pi in poly_ids:subgroups.setdefault(layer['surface'][pi],[]).append(pi)
+  pp=[];nn=[];ii=[];ss=[];uu=[];draws=[];vertex_total=0;index_total=0
+  for subtag,subpolys in subgroups.items():
+   mesh=build_mesh(points,[layer['polys'][pi] for pi in subpolys])
+   if mesh is None:continue
+   positions,normals,indices,source_indices,face_polys=mesh
+   surfname=lwo['tags'][subtag] if 0<=subtag<len(lwo['tags']) else ''
+   mat=json.loads(json.dumps(lwo['materials'].get(surfname,{'name':surfname,'color':[.78]*3,'layers':[]})))
+   uvnames={x['uvMap'] for x in mat['layers'] if x['projection']==5};assert len(uvnames)<=1,f'{stem}/{surfname}: multiple UV maps unsupported'
+   uv=np.zeros((len(positions),2),np.float32)
+   if uvnames:
+    uvmap=lwo['uvmaps'][layer['number']][next(iter(uvnames))];remap={};old=[];uvs=[];new=[]
+    for corner,vi in enumerate(indices):
+     point=int(source_indices[vi]);pi=subpolys[face_polys[corner//3]];value=uvmap['corners'].get((pi,point),uvmap['points'].get(point,(0,0)));k=(int(vi),*value)
+     if k not in remap:remap[k]=len(old);old.append(vi);uvs.append(value)
+     new.append(remap[k])
+    positions=positions[old];normals=normals[old];source_indices=source_indices[old];indices=np.array(new,np.uint32);uv=np.array(uvs,np.float32)
+   for tex in mat['layers']:
+    image=tex.pop('image');tex['texture']=textures.export(image)
+    if tex['texture'] is None:mat.setdefault('unsupported',[]).append('Missing image: '+image)
+   mat['layers']=[tex for tex in mat['layers'] if tex['texture'] is not None]
+   mat['sourceObject']=it['file'];mat['sourceWorld']=world(it).T.ravel().tolist()
+   mk=json.dumps(mat,sort_keys=True)
+   if mk not in material_ids:material_ids[mk]=len(materials);materials.append(mat)
+   draws.append({'start':index_total,'count':len(indices),'material':material_ids[mk]})
+   pp.append(positions);nn.append(normals);ii.append(indices+vertex_total);ss.append(layer['points'][source_indices]);uu.append(uv);vertex_total+=len(positions);index_total+=len(indices)
+  if not pp:continue
+  positions=np.concatenate(pp);normals=np.concatenate(nn);indices=np.concatenate(ii);source_positions=np.concatenate(ss);uv=np.concatenate(uu)
   surface=lwo['tags'][tag] if 0<=tag<len(lwo['tags']) else ''
   pid=slug(f"{stem}-{it['layer']}"+(f'-{surface}' if split and surface else ''))
   if any(p['id']==pid for p in parts):pid=f'{pid}-{len(parts)}'
-  positions,normals,indices=mesh
   if len(blob)>7_000_000:flush()
-  po=append(positions);no=append(normals);io=append(indices)
+  po=append(positions);no=append(normals);io=append(indices);so=append(source_positions.astype(np.float32));uo=append(uv)
   part_name=f'{name}: {clean(surface)}' if split and surface and clean(surface) else name
   part_system=surface_systems.get(surface,system) if split else system
   parts.append({'id':pid,'name':part_name,'conceptId':concept_id,'system':part_system,'item':it['id'],'chunk':chunk,'positions':po,'normals':no,'indices':io,'vertexCount':len(positions),'indexCount':len(indices),'bounds':[positions.min(0).tolist(),positions.max(0).tolist()]})
+  parts[-1].update(sourcePositions=so,uvs=uo,draws=draws)
   concepts.setdefault(concept_id,{'id':concept_id,'name':concept_names[concept_id],'elements':[]})['elements'].append(pid);part_stems[pid]=stem
   total_triangles+=len(indices)//3;record['parts']+=1
  for number,other in lwo['layers'].items():
@@ -195,6 +228,7 @@ for c in chunks:
  path.write_bytes(data)
 lo=(lo-center).tolist();hi=(hi-center).tolist()
 manifest={'version':'ISS complete 2011','source':'NASA Johnson Space Center Visual Communications Lab','scope':f'International Space Station, projected 2011 configuration · {len(scene_objects)} scene layers','parts':parts,'chunks':chunks,'triangles':total_triangles,'concepts':list(concepts.values()),'bounds':[lo,hi],'scene':{'file':'Scenes/ISS complete_2011.lws','objects':scene_objects}}
+manifest.update(materials=materials,geometryPolicy='Full source triangulation; no lossy simplification',sourceTriangles=total_triangles,appearance={'method':'Original surface colors and image color layers; legacy shading approximated','unsupportedEffects':sorted(set(e for mat in materials for e in mat.get('unsupported',[])))})
 (out/'atlas.json').write_text(json.dumps(manifest,separators=(',',':')))
 print(json.dumps({'parts':len(parts),'concepts':len(manifest['concepts']),'triangles':total_triangles,'bytes':sum(c['bytes'] for c in chunks),'chunks':len(chunks),'sceneObjects':len(scene_objects),'objectsWithoutParts':[o['file']+'#'+str(o['layer']) for o in scene_objects if not o['parts']],'systems':sorted(set(p['system'] for p in parts)),'extentMeters':[round(b-a,2) for a,b in zip(lo,hi)],'skipped':skipped},indent=1))
 if '--stats' in flags:

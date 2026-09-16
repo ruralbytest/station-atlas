@@ -11,6 +11,9 @@ An interactive 3D model of the International Space Station built with React, Thr
 - Search module names and source identifiers.
 - Isolate a selected structure and read its sourced launch facts.
 - Use compact controls and detail panels on mobile.
+- Switch between light and dark mode; the viewer remembers your choice.
+- Copy a view link to share its selected structure, systems, camera preset, assembly date, and exploded/isolation state.
+- Jump to a selected structure's launch when it is hidden by the assembly timeline.
 
 ## Run locally
 
@@ -27,13 +30,14 @@ Open http://localhost:3016. To build the static site, run `npm run build`; the o
 
 ```sh
 npm run check
-node scripts/validate-atlas.mjs
-node scripts/validate-interactions.mjs
-node scripts/missing-launches.mjs
-npm run build
+npm test
+npx playwright install chromium
+npm run test:browser
 ```
 
-Validation covers mesh buffers, names and concept membership, sourced explanations and a launch date for every concept, the assembly timeline's range and pace, nonoverlapping exploded layouts at desktop and mobile aspect ratios, search and inspection contracts, and tap-versus-drag handling. Browser interaction checks have exercised selection, system controls, search, isolation, rotation, and 390×844, 320×568, and 844×390 layouts. Phone controls stay clear of the exploded inventory, and isolated structures fit the space above or beside the detail panel. Physical-device performance and real multitouch hardware have not been tested.
+Validation covers mesh buffers, concept membership, sourced explanations and launch dates, timeline behavior, exploded layouts, tap-versus-drag handling, URL round-trips, and compressed model downloads. The Playwright suite builds and serves the production site on port 3017, then exercises visible counts, future selections, the complete-model endpoint, camera restoration after isolation, shared links, citations, loading failures, theme persistence, and phone controls. A camera image comparison allows 0.3% differing pixels to tolerate small rendering differences. Failed runs retain traces; the GitHub Actions workflow runs these checks on pushes and pull requests.
+
+The suite also records loading at a 390×844 viewport with 10 Mbps download throughput, 80 ms latency, and 4× CPU slowdown. This uses a local software GPU and is a simulated profile, not a measurement of a physical phone. Physical-device performance and real multitouch hardware have not been tested.
 
 ## Station data
 
@@ -48,6 +52,23 @@ This is an educational explorer, not an engineering or mission-planning referenc
 Geometry is merged into batches per system. Per-structure GPU textures control translation, visibility, and selection, while component geometry supports accurate picking. Exploded layouts pack only the visible pieces. Camera framing and orbit limits are derived from the model's overall bounds. Rendering updates when the scene changes; orbit controls remain responsive without hundreds of separate draw calls.
 
 The optional WebMCP tools expose station search and inspection in compatible browsers. The visible interface works without them.
+
+The historical slider runs through December 31, 2011. Its final, separate **Complete** position shows the full reference model, including elements that launched later. The caption and accessible slider value distinguish this from a historical date. Future selections explain their visibility and offer either **Jump to launch** or **Show complete reference model**.
+
+View state is stored in the URL fragment, so links work on a static host. Light/dark preference remains local to the browser. Links preserve camera presets rather than an arbitrary dragged camera position.
+
+The Three.js viewer loads as a separate JavaScript chunk. Tailwind scans the application and the used UI components listed in `app/globals.css`; update that source list when adding another UI component. The scene measures visible controls and panels via `app/scene-viewport.ts`, with resize and DOM observers keeping camera framing in step with the CSS layout.
+
+Measured production sizes after the interaction review:
+
+| Asset | Before | After |
+| --- | ---: | ---: |
+| Initial JavaScript | 1,005 kB | 451 kB |
+| Deferred 3D viewer | — | 582 kB |
+| CSS | 202 kB | 80 kB |
+| Compressed geometry | 6.17 MB | 6.17 MB |
+
+Deferring the viewer lets the interface load first; it does not reduce the total JavaScript or geometry needed to display the station. The simulated mobile profile described above reached ready in approximately 6.8 seconds in a local run; hardware, network and browser differences will affect that number.
 
 ## Rebuilding geometry
 
